@@ -1,1 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visual Position Adjuster — dev tool</title>
+<style>
+  :root{ --bg:#111; --panel:#1a1a1a; --accent:#4FD1C5; --ink:#eee; --dim:#999; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:system-ui,sans-serif; }
+  .layout{ display:flex; flex-direction:column; min-height:100vh; }
 
+  .stage-wrap{
+    position:relative;
+    width:100%;
+    max-width:405px; /* 720x1280 scaled to a comfortable phone-ish width */
+    margin:0 auto;
+    background:#000;
+  }
+  .stage{
+    position:relative;
+    width:100%;
+    aspect-ratio: 9 / 16;
+    overflow:hidden;
+    background:#222;
+  }
+  .stage video, .stage img.bg-still{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+  }
+  .box{
+    position:absolute;
+    border:2px dashed var(--accent);
+    background:rgba(79,209,197,0.15);
+    cursor:move;
+    touch-action:none;
+  }
+  .box::after{
+    content:"";
+    position:absolute;
+    right:-6px; bottom:-6px;
+    width:14px; height:14px;
+    background:var(--accent);
+    border-radius:3px;
+    cursor:nwse-resize;
+  }
+  .box.round{ border-radius:50%; }
+  .box .name-label{
+    position:absolute;
+    left:0; right:0; top:100%;
+    text-align:center;
+    font-size:11px;
+    color:var(--accent);
+    margin-top:2px;
+    pointer-events:none;
+  }
+
+  .panel{ background:var(--panel); padding:20px; }
+  .panel h1{ font-size:1rem; margin:0 0 4px; }
+  .panel .sub{ color:var(--dim); font-size:0.8rem; margin:0 0 18px; }
+
+  .row{ margin-bottom:16px; }
+  .row label{ display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:6px; }
+  .row label span:last-child{ color:var(--accent); font-variant-numeric: tabular-nums; }
+  input[type=range]{ width:100%; accent-color:var(--accent); }
+
+  .file-row{ display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
+  .file-row label{
+    background:#242424; padding:10px 14px; border-radius:8px;
+    font-size:0.8rem; cursor:pointer; border:1px solid #333;
+  }
+  .file-row input{ display:none; }
+  .shape-toggle{ display:flex; gap:8px; margin-bottom:18px; }
+  .shape-toggle button{
+    flex:1; padding:10px; border-radius:8px; border:1px solid #333;
+    background:#242424; color:var(--ink); cursor:pointer; font-size:0.8rem;
+  }
+  .shape-toggle button.active{ border-color:var(--accent); color:var(--accent); }
+
+  .output{
+    background:#0d0d0d;
+    border:1px solid #2a2a2a;
+    border-radius:10px;
+    padding:14px;
+    font-family:ui-monospace,Menlo,monospace;
+    font-size:0.8rem;
+    white-space:pre;
+    overflow-x:auto;
+    color:#9fe6c8;
+  }
+  .copy-btn{
+    margin-top:10px; width:100%; padding:11px;
+    border:none; border-radius:8px;
+    background:var(--accent); color:#062b26;
+    font-weight:700; cursor:pointer;
+  }
+  .note{ font-size:0.75rem; color:var(--dim); margin-top:16px; line-height:1.5; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <div class="stage-wrap">
+    <div class="stage" id="stage">
+      <video id="bgVideo" muted loop playsinline hidden></video>
+      <img id="bgStill" class="bg-still" hidden alt="">
+      <div class="box round" id="box">
+        <span class="name-label">photo box</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h1>Visual Position Adjuster</h1>
+    <p class="sub">Load a background clip/frame, drag &amp; resize the box over the empty circle, then copy the percentages into theme-config.js.</p>
+
+    <div class="file-row">
+      <label>Load video
+        <input type="file" id="videoInput" accept="video/*">
+      </label>
+      <label>Load still image
+        <input type="file" id="imageInput" accept="image/*">
+      </label>
+    </div>
+
+    <div class="shape-toggle">
+      <button id="shapeRound" class="active">Round</button>
+      <button id="shapeSquare">Square / rounded-rect</button>
+    </div>
+
+    <div class="row">
+      <label><span>Top</span><span id="topVal">25%</span></label>
+      <input type="range" id="topRange" min="0" max="100" step="0.1" value="25">
+    </div>
+    <div class="row">
+      <label><span>Left (center)</span><span id="leftVal">50%</span></label>
+      <input type="range" id="leftRange" min="0" max="100" step="0.1" value="50">
+    </div>
+    <div class="row">
+      <label><span>Width</span><span id="widthVal">40%</span></label>
+      <input type="range" id="widthRange" min="5" max="100" step="0.1" value="40">
+    </div>
+
+    <div class="output" id="output">photoPosition: { ... }</div>
+    <button class="copy-btn" id="copyBtn">Copy config snippet</button>
+
+    <p class="note">
+      Tip: the box can also be dragged directly on the preview and resized from its bottom-right corner —
+      the sliders and drag stay in sync. Values shown are already in the top/left/width % format theme-config.js expects.
+    </p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const stage = document.getElementById('stage');
+  const box = document.getElementById('box');
+  const bgVideo = document.getElementById('bgVideo');
+  const bgStill = document.getElementById('bgStill');
+
+  const topRange = document.getElementById('topRange');
+  const leftRange = document.getElementById('leftRange');
+  const widthRange = document.getElementById('widthRange');
+  const topVal = document.getElementById('topVal');
+  const leftVal = document.getElementById('leftVal');
+  const widthVal = document.getElementById('widthVal');
+  const output = document.getElementById('output');
+
+  let shape = 'round';
+
+  function applyBox(){
+    const top = parseFloat(topRange.value);
+    const left = parseFloat(leftRange.value);
+    const width = parseFloat(widthRange.value);
+
+    box.style.top = top + '%';
+    box.style.left = left + '%';
+    box.style.width = width + '%';
+    box.style.aspectRatio = '1 / 1';
+    box.style.transform = 'translateX(-50%)';
+
+    topVal.textContent = top.toFixed(1) + '%';
+    leftVal.textContent = left.toFixed(1) + '%';
+    widthVal.textContent = width.toFixed(1) + '%';
+
+    output.textContent =
+`photoPosition: {
+  top: "${top.toFixed(1)}%",
+  left: "${left.toFixed(1)}%",
+  width: "${width.toFixed(1)}%",
+  borderRadius: "${shape === 'round' ? '50%' : '16px'}"
+}`;
+  }
+
+  [topRange, leftRange, widthRange].forEach(r => r.addEventListener('input', applyBox));
+
+  document.getElementById('shapeRound').addEventListener('click', (e) => {
+    shape = 'round';
+    box.classList.add('round');
+    e.target.classList.add('active');
+    document.getElementById('shapeSquare').classList.remove('active');
+    applyBox();
+  });
+  document.getElementById('shapeSquare').addEventListener('click', (e) => {
+    shape = 'square';
+    box.classList.remove('round');
+    e.target.classList.add('active');
+    document.getElementById('shapeRound').classList.remove('active');
+    applyBox();
+  });
+
+  // ---- file loading ----
+  document.getElementById('videoInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    bgVideo.src = URL.createObjectURL(file);
+    bgVideo.hidden = false;
+    bgStill.hidden = true;
+    bgVideo.play().catch(()=>{});
+  });
+  document.getElementById('imageInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    bgStill.src = URL.createObjectURL(file);
+    bgStill.hidden = false;
+    bgVideo.hidden = true;
+  });
+
+  // ---- drag to move ----
+  let dragging = false, resizing = false, startX, startY, startTop, startLeft, startWidth;
+
+  box.addEventListener('pointerdown', (e) => {
+    const rect = box.getBoundingClientRect();
+    const isResizeHandle = (e.clientX > rect.right - 20) && (e.clientY > rect.bottom - 20);
+    dragging = !isResizeHandle;
+    resizing = isResizeHandle;
+    startX = e.clientX; startY = e.clientY;
+    startTop = parseFloat(topRange.value);
+    startLeft = parseFloat(leftRange.value);
+    startWidth = parseFloat(widthRange.value);
+    box.setPointerCapture(e.pointerId);
+  });
+
+  box.addEventListener('pointermove', (e) => {
+    if (!dragging && !resizing) return;
+    const stageRect = stage.getBoundingClientRect();
+    const dxPct = (e.clientX - startX) / stageRect.width * 100;
+    const dyPct = (e.clientY - startY) / stageRect.height * 100;
+
+    if (dragging){
+      leftRange.value = Math.min(100, Math.max(0, startLeft + dxPct));
+      topRange.value = Math.min(100, Math.max(0, startTop + dyPct));
+    } else if (resizing){
+      widthRange.value = Math.min(100, Math.max(5, startWidth + dxPct));
+    }
+    applyBox();
+  });
+
+  box.addEventListener('pointerup', () => { dragging = false; resizing = false; });
+
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(output.textContent).then(() => {
+      const btn = document.getElementById('copyBtn');
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = original, 1200);
+    });
+  });
+
+  applyBox();
+})();
+</script>
+
+</body>
+</html>
