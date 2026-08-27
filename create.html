@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Make a Wish — WishCraft</title>
+<meta name="description" content="Add a name, a photo, and a tune to make your birthday video wish.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="create.css">
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="index.html" class="logo">Wish<em>Craft</em></a>
+    <span class="tagline">made for WhatsApp Status</span>
+  </div>
+</header>
+
+<main class="wrap form-wrap">
+
+  <p class="eyebrow" id="themeEyebrow">birthday wish</p>
+  <h1 id="themeTitle">Make it theirs</h1>
+  <p class="hero-sub" id="themeSub">Add their name, a good photo, and a tune — we'll do the rest.</p>
+
+  <form id="wishForm" novalidate>
+
+    <!-- Design picker: only shown by create.js when a category has 2+ designs -->
+    <fieldset class="field" id="designField" hidden>
+      <legend>Choose a design</legend>
+      <div class="design-list" id="designList"></div>
+    </fieldset>
+
+    <!-- Name field: shown/hidden per theme by create.js -->
+    <div class="field" id="nameField">
+      <label for="nameInput">Their name</label>
+      <input type="text" id="nameInput" name="name" maxlength="30" placeholder="e.g. Priya" autocomplete="off">
+      <p class="field-hint">Shows on the card exactly as typed.</p>
+    </div>
+
+    <!-- Photo upload -->
+    <div class="field">
+      <label for="photoInput">Their photo</label>
+      <label class="dropzone" id="dropzone" for="photoInput">
+        <span class="dz-icon" id="dzIcon">📷</span>
+        <span class="dz-text" id="dzText">Tap to choose a photo</span>
+        <img id="previewImg" class="dz-preview" alt="" hidden>
+      </label>
+      <input type="file" id="photoInput" name="photo" accept="image/*" hidden>
+      <div class="progress-track" id="progressTrack" hidden>
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <p class="field-hint" id="uploadStatus">A close-up, well-lit photo works best.</p>
+    </div>
+
+    <!-- Music selection -->
+    <fieldset class="field">
+      <legend>Background music</legend>
+      <div class="music-list" id="musicList">
+        <!-- populated by create.js from themeSettings -->
+      </div>
+    </fieldset>
+
+    <button type="submit" class="btn-primary" id="submitBtn" disabled>
+      <span id="submitLabel">Create the video</span>
+    </button>
+    <p class="field-hint" id="formError" role="alert"></p>
+
+  </form>
+
+  <!-- Rendering state -->
+  <div class="render-state" id="renderState" hidden>
+    <div class="spinner"></div>
+    <p id="renderMessage">Lighting the candles… ✨</p>
+  </div>
+
+</main>
+
+<footer class="wrap">
+  <p>WishCraft · <a href="privacy.html">Privacy</a> · <a href="contact.html">Contact</a></p>
+</footer>
+
+<script type="module" src="js/category-config.js"></script>
+<script type="module" src="js/firebase-config.js"></script>
+<script type="module" src="js/create.js"></script>
+</body>
+</html>

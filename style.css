@@ -1,0 +1,197 @@
+/* ===== WishCraft — shared styles ===== */
+
+:root{
+  --bg: #1A1420;
+  --bg-soft: #241C2C;
+  --ink: #F3ECE6;
+  --ink-dim: #B6A9BC;
+  --gold: #E8B34E;
+  --coral: #F4739E;
+  --sage: #8FBF9F;
+  --line: rgba(243,236,230,0.10);
+  --radius: 18px;
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", -apple-system, sans-serif;
+}
+
+*{ box-sizing: border-box; }
+
+html{ scroll-behavior: smooth; }
+
+body{
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap{
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* subtle film-grain so the flat dark background doesn't look like a template default */
+.grain{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- topbar ---------- */
+.topbar{ padding: 20px 0 0; position: relative; z-index: 2; }
+.topbar-inner{ display: flex; align-items: baseline; justify-content: space-between; }
+.logo{ font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; letter-spacing: 0.01em; }
+.logo em{ font-style: normal; color: var(--gold); }
+.tagline{ font-size: 0.75rem; color: var(--ink-dim); }
+
+/* ---------- hero ---------- */
+.hero{ padding: 56px 24px 12px; position: relative; z-index: 2; }
+.eyebrow{
+  margin: 0 0 14px;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--coral);
+  font-weight: 600;
+}
+.hero h1{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 7vw, 2.9rem);
+  line-height: 1.08;
+  margin: 0 0 18px;
+  letter-spacing: -0.01em;
+}
+.hero-sub{
+  max-width: 46ch;
+  color: var(--ink-dim);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* ---------- card stack (signature element) ---------- */
+.deck{ padding: 48px 24px; position: relative; z-index: 2; }
+.card-stack{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.occasion-card{
+  --tilt: 0deg;
+  --accent: var(--gold);
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: linear-gradient(155deg, var(--bg-soft), #1E1723);
+  padding: 22px 22px;
+  transform: rotate(var(--tilt));
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 14px 30px -18px rgba(0,0,0,0.6);
+  position: relative;
+  overflow: hidden;
+}
+
+.occasion-card::before{
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--accent);
+}
+
+.occasion-card.is-live:hover,
+.occasion-card.is-live:focus-visible{
+  transform: rotate(0deg) translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 20px 40px -18px rgba(0,0,0,0.7);
+}
+
+.occasion-card.is-live:focus-visible{ outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.occasion-card.is-soon{
+  opacity: 0.55;
+  cursor: default;
+}
+
+.card-face{ display: flex; align-items: center; gap: 16px; }
+.card-icon{ font-size: 1.8rem; line-height: 1; }
+.card-name{
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  flex: 1;
+}
+.card-status{
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.is-soon .card-status{ color: var(--ink-dim); }
+
+/* ---------- how it works ---------- */
+.how{ padding: 40px 24px 72px; position: relative; z-index: 2; }
+.how h2{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.4rem;
+  margin: 0 0 22px;
+}
+.steps{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.steps li{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-dim);
+  font-size: 0.95rem;
+}
+.steps li:last-child{ border-bottom: none; }
+.step-mark{
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-width: 92px;
+}
+
+/* ---------- footer ---------- */
+footer{
+  padding: 28px 24px 40px;
+  color: var(--ink-dim);
+  font-size: 0.8rem;
+  position: relative;
+  z-index: 2;
+}
+footer a{ color: var(--ink-dim); }
+footer a:hover{ color: var(--ink); }
+
+@media (min-width: 620px){
+  .card-stack{ flex-direction: row; }
+  .occasion-card{ flex: 1; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior: auto; }
+  .occasion-card{ transition: none; }
+}
