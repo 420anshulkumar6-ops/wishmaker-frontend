@@ -52,6 +52,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 .wish-display video{
@@ -64,16 +65,13 @@
   display: block;
 }
 
-/* tap-to-play overlay: shown until the user taps, then hidden via JS */
-.wish-display{ position: relative; }
+/* tap-to-play overlay: shown until the user taps, then hidden via JS.
+   Sits exactly over the video because .wish-display is its positioned
+   parent and the video defines that parent's size (flex column, video
+   is the first/only sized child). */
 .tap-to-play{
   position: absolute;
   inset: 0;
-  bottom: auto;
-  height: 0;
-  padding-bottom: 177.7%; /* 16:9 portrait aspect, matches video */
-  width: 100%;
-  max-width: 380px;
   margin: 0;
   border: none;
   border-radius: var(--radius);
