@@ -1,0 +1,129 @@
+/* ===== wish.css ===== */
+
+.wish-wrap{
+  padding-top: 40px;
+  padding-bottom: 60px;
+  position: relative;
+  z-index: 2;
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* loading state */
+.loading-state{
+  text-align: center;
+  padding: 80px 0;
+  color: var(--ink-dim);
+}
+.spinner{
+  width: 40px; height: 40px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  border: 3px solid var(--line);
+  border-top-color: var(--gold);
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+/* error state */
+.error-state{ text-align: center; padding: 60px 24px; }
+.error-state h1{
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+.btn-secondary{
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+/* main wish display */
+.wish-display{
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wish-display video{
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: #000;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  display: block;
+}
+
+/* tap-to-play overlay: shown until the user taps, then hidden via JS */
+.wish-display{ position: relative; }
+.tap-to-play{
+  position: absolute;
+  inset: 0;
+  bottom: auto;
+  height: 0;
+  padding-bottom: 177.7%; /* 16:9 portrait aspect, matches video */
+  width: 100%;
+  max-width: 380px;
+  margin: 0;
+  border: none;
+  border-radius: var(--radius);
+  background: rgba(0,0,0,0.45);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.tap-to-play span:first-child{ font-size: 2.2rem; }
+.tap-to-play.is-hidden{ display: none; }
+
+.action-box{
+  width: 100%;
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-primary{
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--gold), #d99a2b);
+  color: #1A1420;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-whatsapp{
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  background: #25D366;
+  color: #05310f;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-primary:disabled,
+.btn-whatsapp:disabled{ opacity: 0.5; cursor: not-allowed; }
+
+#actionHint{ text-align: center; margin-top: 14px; }

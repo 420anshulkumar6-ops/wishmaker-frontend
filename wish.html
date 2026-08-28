@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Wish — WishCraft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="wish.css">
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="index.html" class="logo">Wish<em>Craft</em></a>
+  </div>
+</header>
+
+<main class="wrap wish-wrap">
+
+  <!-- Loading state -->
+  <div class="loading-state" id="loadingState">
+    <div class="spinner"></div>
+    <p>Loading the wish… ✨</p>
+  </div>
+
+  <!-- Error state: bad/missing id -->
+  <div class="error-state" id="errorState" hidden>
+    <h1>Couldn't find this wish</h1>
+    <p class="hero-sub">The link might be incomplete, or the wish may have expired.</p>
+    <a href="index.html" class="btn-secondary">Make a new one</a>
+  </div>
+
+  <!-- Main wish display -->
+  <div class="wish-display" id="wishDisplay" hidden>
+    <video id="wishVideo" playsinline loop muted></video>
+
+    <button class="tap-to-play" id="tapToPlay">
+      <span>🎁</span>
+      <span>Tap to play</span>
+    </button>
+
+    <div class="action-box">
+      <button class="btn-primary" id="downloadBtn">Download video</button>
+      <button class="btn-whatsapp" id="whatsappBtn">Share to WhatsApp</button>
+    </div>
+
+    <p class="field-hint" id="actionHint">You can download it, then post it straight to your Status.</p>
+  </div>
+
+</main>
+
+<footer class="wrap">
+  <p>WishCraft · <a href="privacy.html">Privacy</a> · <a href="contact.html">Contact</a></p>
+</footer>
+
+<script type="module" src="js/firebase-config.js"></script>
+<script type="module" src="js/wish.js"></script>
+</body>
+</html>
