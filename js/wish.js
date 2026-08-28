@@ -108,10 +108,13 @@ import { getWish } from "./firebase-config.js";
       }
       throw new Error("File sharing not supported on this browser");
     } catch (err) {
-      // Fallback: share the page link via WhatsApp's own share URL
+      // Fallback: file-sharing isn't supported on this browser/device.
+      // Share the page link via WhatsApp instead, and tell the user why —
+      // otherwise it looks like the button is just "wrong".
       const pageUrl = window.location.href;
       const waUrl = `https://wa.me/?text=${encodeURIComponent(shareText + " " + pageUrl)}`;
       window.open(waUrl, "_blank");
+      els.actionHint.textContent = "This browser can't attach the video directly — we shared the link instead. Download the video above to post it to your Status.";
     }
   });
 
