@@ -23,7 +23,17 @@
   .row{ margin-bottom:16px; }
   .row label{ display:flex; justify-content:space-between; }
   .row label span:last-child{ color:var(--accent); font-variant-numeric: tabular-nums; }
-  input[type=range]{ width:100%; accent-color:var(--accent); }
+
+  .slider-line{ display:flex; align-items:center; gap:8px; }
+  .slider-line input[type=range]{ flex:1; accent-color:var(--accent); }
+  .step-btn{
+    width:34px; height:34px; flex-shrink:0;
+    border:1px solid #333; border-radius:8px;
+    background:#242424; color:var(--ink);
+    font-size:1.1rem; font-weight:700; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .step-btn:active{ background:#333; }
 
   .go-btn{
     width:100%; padding:13px; border:none; border-radius:8px;
@@ -36,9 +46,37 @@
     width:100%; max-width:360px; margin:0 auto 16px;
     border:1px solid #333; border-radius:10px; overflow:hidden;
     background:#000; aspect-ratio: 9/16; display:flex; align-items:center; justify-content:center;
+    position:relative;
   }
-  .preview-box img{ width:100%; height:100%; object-fit:contain; }
+  .preview-box img.bg-img{ width:100%; height:100%; object-fit:contain; display:block; }
   .preview-box .placeholder{ color:var(--dim); font-size:0.85rem; text-align:center; padding:20px; }
+
+  /* instant CSS approximation, shown while dragging sliders — not the real render */
+  .live-overlay{ position:absolute; inset:0; display:none; pointer-events:none; }
+  .live-overlay.active{ display:block; }
+  .live-photo{
+    position:absolute;
+    border-radius:50%;
+    overflow:hidden;
+    border:2px dashed rgba(79,209,197,0.9);
+    background:#333;
+  }
+  .live-photo img{ width:100%; height:100%; object-fit:cover; }
+  .live-name{
+    position:absolute;
+    left:0; right:0;
+    text-align:center;
+    color:#fff;
+    font-weight:700;
+    font-size:3.2vw;
+    text-shadow: 0 0 4px #000, 0 0 4px #000;
+  }
+  .mode-tag{
+    position:absolute; top:6px; left:6px;
+    background:rgba(0,0,0,0.6); color:var(--accent);
+    font-size:0.65rem; padding:3px 8px; border-radius:6px;
+    z-index:2;
+  }
 
   .status{ text-align:center; font-size:0.85rem; color:var(--dim); margin-bottom:16px; min-height:1.2em; }
 
@@ -58,10 +96,10 @@
 <div class="panel">
   <h1>Position Tester — live backend</h1>
   <p class="sub">
-    This calls your real Render backend and asks it to render a single frame
-    with the exact same FFmpeg code used for actual wishes — so what you see
-    here is guaranteed to match the final video. Upload any real photo, dial
-    in the sliders, and copy the values once it looks right.
+    Drag the sliders for an instant rough preview (photo shown as a dashed
+    circle, not a real render). Click "Render exact frame" to get the real
+    FFmpeg output from your backend — that one is guaranteed to match the
+    final video, but takes a few seconds.
   </p>
 
   <label>Backend URL
@@ -70,6 +108,10 @@
 
   <label>Design ID (from categoryConfig.js)
     <input type="text" id="designId" value="birthday-1" placeholder="e.g. birthday-2">
+  </label>
+
+  <label>Background image (for the instant preview only — pick any still frame of the clip)
+    <input type="file" id="bgInput" accept="image/*">
   </label>
 
   <label>Test photo
@@ -81,23 +123,35 @@
   </label>
 
   <div class="row">
-    <label><span>Top</span><span id="topVal">27%</span></label>
-    <input type="range" id="topRange" min="0" max="100" step="0.5" value="27">
+    <label><span>Top</span><span id="topVal">27.0%</span></label>
+    <div class="slider-line">
+      <button type="button" class="step-btn" data-target="topRange" data-step="-0.1">−</button>
+      <input type="range" id="topRange" min="0" max="100" step="0.1" value="27">
+      <button type="button" class="step-btn" data-target="topRange" data-step="0.1">+</button>
+    </div>
   </div>
   <div class="row">
-    <label><span>Left (center)</span><span id="leftVal">50%</span></label>
-    <input type="range" id="leftRange" min="0" max="100" step="0.5" value="50">
+    <label><span>Left (center)</span><span id="leftVal">50.0%</span></label>
+    <div class="slider-line">
+      <button type="button" class="step-btn" data-target="leftRange" data-step="-0.1">−</button>
+      <input type="range" id="leftRange" min="0" max="100" step="0.1" value="50">
+      <button type="button" class="step-btn" data-target="leftRange" data-step="0.1">+</button>
+    </div>
   </div>
   <div class="row">
-    <label><span>Width</span><span id="widthVal">40%</span></label>
-    <input type="range" id="widthRange" min="5" max="100" step="0.5" value="40">
+    <label><span>Width</span><span id="widthVal">40.0%</span></label>
+    <div class="slider-line">
+      <button type="button" class="step-btn" data-target="widthRange" data-step="-0.1">−</button>
+      <input type="range" id="widthRange" min="5" max="100" step="0.1" value="40">
+      <button type="button" class="step-btn" data-target="widthRange" data-step="0.1">+</button>
+    </div>
   </div>
 
-  <button class="go-btn" id="renderBtn">Render preview frame</button>
+  <button class="go-btn" id="renderBtn">Render exact frame (real backend)</button>
   <p class="status" id="status"></p>
 
   <div class="preview-box" id="previewBox">
-    <p class="placeholder">Upload a photo and hit "Render preview frame" to see it here.</p>
+    <p class="placeholder">Upload a background image above to see the instant preview, or upload a test photo and hit "Render exact frame" for the real result.</p>
   </div>
 
   <div class="output" id="output">photoPosition: { ... }</div>
@@ -109,6 +163,7 @@
   const els = {
     backendUrl: document.getElementById('backendUrl'),
     designId: document.getElementById('designId'),
+    bgInput: document.getElementById('bgInput'),
     photoInput: document.getElementById('photoInput'),
     nameInput: document.getElementById('nameInput'),
     topRange: document.getElementById('topRange'),
@@ -124,6 +179,64 @@
     copyBtn: document.getElementById('copyBtn')
   };
 
+  let bgObjectUrl = null;
+  let photoObjectUrl = null;
+  let liveOverlayBuilt = false;
+
+  function ensureLiveOverlay(){
+    if (liveOverlayBuilt) return;
+    els.previewBox.querySelector('.placeholder')?.remove();
+
+    const bgImg = document.createElement('img');
+    bgImg.className = 'bg-img';
+    bgImg.id = 'liveBgImg';
+    els.previewBox.appendChild(bgImg);
+
+    const tag = document.createElement('span');
+    tag.className = 'mode-tag';
+    tag.textContent = 'instant preview (approximate)';
+    els.previewBox.appendChild(tag);
+
+    const overlay = document.createElement('div');
+    overlay.className = 'live-overlay active';
+    overlay.id = 'liveOverlay';
+
+    const photoBox = document.createElement('div');
+    photoBox.className = 'live-photo';
+    photoBox.id = 'livePhotoBox';
+    const photoImg = document.createElement('img');
+    photoImg.id = 'livePhotoImg';
+    photoBox.appendChild(photoImg);
+    overlay.appendChild(photoBox);
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'live-name';
+    nameEl.id = 'liveNameEl';
+    overlay.appendChild(nameEl);
+
+    els.previewBox.appendChild(overlay);
+    liveOverlayBuilt = true;
+  }
+
+  // ---- instant CSS preview: updates immediately as sliders move ----
+  function updateLivePreview(){
+    ensureLiveOverlay();
+    const top = parseFloat(els.topRange.value);
+    const left = parseFloat(els.leftRange.value);
+    const width = parseFloat(els.widthRange.value);
+
+    const box = document.getElementById('livePhotoBox');
+    box.style.top = top + '%';
+    box.style.left = left + '%';
+    box.style.width = width + '%';
+    box.style.aspectRatio = '1 / 1';
+    box.style.transform = 'translateX(-50%)';
+
+    const nameEl = document.getElementById('liveNameEl');
+    nameEl.style.top = `calc(${top}% + ${width}% + 2%)`;
+    nameEl.textContent = els.nameInput.value || '';
+  }
+
   function updateLabels(){
     els.topVal.textContent = parseFloat(els.topRange.value).toFixed(1) + '%';
     els.leftVal.textContent = parseFloat(els.leftRange.value).toFixed(1) + '%';
@@ -135,9 +248,44 @@
   widthPercent: ${parseFloat(els.widthRange.value)},
   shape: "circle"
 }`;
+    updateLivePreview();
   }
   [els.topRange, els.leftRange, els.widthRange].forEach(r => r.addEventListener('input', updateLabels));
+  els.nameInput.addEventListener('input', updateLivePreview);
   updateLabels();
+
+  // ---- +/- step buttons ----
+  document.querySelectorAll('.step-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.dataset.target;
+      const step = parseFloat(btn.dataset.step);
+      const input = document.getElementById(targetId);
+      let value = parseFloat(input.value) + step;
+      value = Math.max(parseFloat(input.min), Math.min(parseFloat(input.max), value));
+      input.value = value.toFixed(1);
+      updateLabels();
+    });
+  });
+
+  // ---- background image for the instant preview (just a visual reference, not sent anywhere) ----
+  els.bgInput.addEventListener('change', () => {
+    const file = els.bgInput.files[0];
+    if (!file) return;
+    ensureLiveOverlay();
+    if (bgObjectUrl) URL.revokeObjectURL(bgObjectUrl);
+    bgObjectUrl = URL.createObjectURL(file);
+    document.getElementById('liveBgImg').src = bgObjectUrl;
+  });
+
+  els.photoInput.addEventListener('change', () => {
+    cachedPhotoUrl = null; // invalidate the uploaded-to-ImgBB cache on new file
+    cachedFile = els.photoInput.files[0];
+    if (!cachedFile) return;
+    ensureLiveOverlay();
+    if (photoObjectUrl) URL.revokeObjectURL(photoObjectUrl);
+    photoObjectUrl = URL.createObjectURL(cachedFile);
+    document.getElementById('livePhotoImg').src = photoObjectUrl;
+  });
 
   // NOTE: this dev tool needs its own photo URL to send to the backend
   // (the backend downloads photos from a URL, same as production). We
@@ -158,14 +306,10 @@
   let cachedPhotoUrl = null;
   let cachedFile = null;
 
-  els.photoInput.addEventListener('change', () => {
-    cachedPhotoUrl = null; // invalidate cache on new file
-    cachedFile = els.photoInput.files[0];
-  });
-
+  // ---- real backend render: the actual FFmpeg output, takes a few seconds ----
   els.renderBtn.addEventListener('click', async () => {
     if (!cachedFile) {
-      els.status.textContent = "Please choose a photo first.";
+      els.status.textContent = "Please choose a test photo first.";
       return;
     }
 
@@ -177,7 +321,7 @@
         cachedPhotoUrl = await uploadToImgBB(cachedFile);
       }
 
-      els.status.textContent = "Rendering frame on backend… (few seconds, longer if it was asleep)";
+      els.status.textContent = "Rendering exact frame on backend… (few seconds, longer if it was asleep)";
 
       const response = await fetch(els.backendUrl.value.replace(/\/$/, '') + '/preview-position', {
         method: 'POST',
@@ -196,12 +340,20 @@
       const blob = await response.blob();
       const imgUrl = URL.createObjectURL(blob);
 
+      // Swap in the real render, hide the instant-preview overlay so there's
+      // no confusion about which one is the guaranteed-accurate result.
       els.previewBox.innerHTML = '';
+      liveOverlayBuilt = false;
+      const tag = document.createElement('span');
+      tag.className = 'mode-tag';
+      tag.textContent = 'real backend render';
+      els.previewBox.appendChild(tag);
       const img = document.createElement('img');
+      img.className = 'bg-img';
       img.src = imgUrl;
       els.previewBox.appendChild(img);
 
-      els.status.textContent = "Done — adjust sliders and render again as needed.";
+      els.status.textContent = "Done — this is the real render. Adjust sliders (preview goes back to instant mode) and re-render as needed.";
     } catch (err) {
       console.error(err);
       els.status.textContent = "Something went wrong — check the backend URL and design ID, then try again.";
@@ -209,6 +361,18 @@
       els.renderBtn.disabled = false;
     }
   });
+
+  // Moving a slider after a real render switches the preview box back to
+  // instant-preview mode, so it's always clear which kind of preview is showing.
+  [els.topRange, els.leftRange, els.widthRange].forEach(r => r.addEventListener('input', () => {
+    if (!liveOverlayBuilt) {
+      els.previewBox.innerHTML = '';
+      ensureLiveOverlay();
+      if (bgObjectUrl) document.getElementById('liveBgImg').src = bgObjectUrl;
+      if (photoObjectUrl) document.getElementById('livePhotoImg').src = photoObjectUrl;
+      updateLivePreview();
+    }
+  }));
 
   els.copyBtn.addEventListener('click', () => {
     navigator.clipboard.writeText(els.output.textContent).then(() => {
