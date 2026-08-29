@@ -46,9 +46,9 @@ const categorySettings = {
         // and visually checking the result — this was more reliable than
         // eyeballing a single frame or a differently-scaled test screenshot.
         photoPosition: {
-          top: "27%",
+          top: "24.5%",
           left: "50%",
-          width: "40%",
+          width: "62.5%",
           borderRadius: "50%"
         },
         sourceClipSeconds: 4.7,   // length of the raw Canva/Flow clip
