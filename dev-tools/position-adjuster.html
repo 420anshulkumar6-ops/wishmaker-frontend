@@ -147,6 +147,15 @@
     </div>
   </div>
 
+  <div class="row">
+    <label><span>Name — Top position (independent of photo)</span><span id="nameTopVal">58.0%</span></label>
+    <div class="slider-line">
+      <button type="button" class="step-btn" data-target="nameTopRange" data-step="-0.1">−</button>
+      <input type="range" id="nameTopRange" min="0" max="100" step="0.1" value="58">
+      <button type="button" class="step-btn" data-target="nameTopRange" data-step="0.1">+</button>
+    </div>
+  </div>
+
   <button class="go-btn" id="renderBtn">Render exact frame (real backend)</button>
   <p class="status" id="status"></p>
 
@@ -169,9 +178,11 @@
     topRange: document.getElementById('topRange'),
     leftRange: document.getElementById('leftRange'),
     widthRange: document.getElementById('widthRange'),
+    nameTopRange: document.getElementById('nameTopRange'),
     topVal: document.getElementById('topVal'),
     leftVal: document.getElementById('leftVal'),
     widthVal: document.getElementById('widthVal'),
+    nameTopVal: document.getElementById('nameTopVal'),
     renderBtn: document.getElementById('renderBtn'),
     status: document.getElementById('status'),
     previewBox: document.getElementById('previewBox'),
@@ -233,7 +244,7 @@
     box.style.transform = 'translateX(-50%)';
 
     const nameEl = document.getElementById('liveNameEl');
-    nameEl.style.top = `calc(${top}% + ${width}% + 2%)`;
+    nameEl.style.top = parseFloat(els.nameTopRange.value) + '%';
     nameEl.textContent = els.nameInput.value || '';
   }
 
@@ -241,16 +252,20 @@
     els.topVal.textContent = parseFloat(els.topRange.value).toFixed(1) + '%';
     els.leftVal.textContent = parseFloat(els.leftRange.value).toFixed(1) + '%';
     els.widthVal.textContent = parseFloat(els.widthRange.value).toFixed(1) + '%';
+    els.nameTopVal.textContent = parseFloat(els.nameTopRange.value).toFixed(1) + '%';
     els.output.textContent =
 `photoPosition: {
   topPercent: ${parseFloat(els.topRange.value)},
   leftPercent: ${parseFloat(els.leftRange.value)},
   widthPercent: ${parseFloat(els.widthRange.value)},
   shape: "circle"
+},
+namePosition: {
+  topPercent: ${parseFloat(els.nameTopRange.value)}
 }`;
     updateLivePreview();
   }
-  [els.topRange, els.leftRange, els.widthRange].forEach(r => r.addEventListener('input', updateLabels));
+  [els.topRange, els.leftRange, els.widthRange, els.nameTopRange].forEach(r => r.addEventListener('input', updateLabels));
   els.nameInput.addEventListener('input', updateLivePreview);
   updateLabels();
 
@@ -332,6 +347,7 @@
           topPercent: els.topRange.value,
           leftPercent: els.leftRange.value,
           widthPercent: els.widthRange.value,
+          nameTopPercent: els.nameTopRange.value,
           name: els.nameInput.value || null
         })
       });
@@ -364,7 +380,7 @@
 
   // Moving a slider after a real render switches the preview box back to
   // instant-preview mode, so it's always clear which kind of preview is showing.
-  [els.topRange, els.leftRange, els.widthRange].forEach(r => r.addEventListener('input', () => {
+  [els.topRange, els.leftRange, els.widthRange, els.nameTopRange].forEach(r => r.addEventListener('input', () => {
     if (!liveOverlayBuilt) {
       els.previewBox.innerHTML = '';
       ensureLiveOverlay();
