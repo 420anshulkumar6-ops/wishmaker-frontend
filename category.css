@@ -1,0 +1,98 @@
+/* ===== category.html — design list within one occasion ===== */
+
+.category-wrap{
+  padding-top: 36px;
+  padding-bottom: 60px;
+  position: relative;
+  z-index: 2;
+}
+
+.back-link{
+  display: inline-block;
+  color: var(--ink-dim);
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+.back-link:hover{ color: var(--ink); }
+
+.category-wrap h1{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.6rem, 6vw, 2.1rem);
+  margin: 0 0 10px;
+}
+.category-wrap .hero-sub{ margin-bottom: 32px; }
+
+.design-list{
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.design-card{
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  overflow: hidden;
+}
+
+.design-preview{
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  max-height: 420px;
+  object-fit: cover;
+  display: block;
+  background: #000;
+}
+.design-preview--placeholder{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-dim);
+  font-size: 0.85rem;
+}
+
+.design-info{ padding: 18px 20px 20px; }
+.design-name{
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 14px;
+}
+
+.try-btn{
+  display: block;
+  text-align: center;
+  padding: 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--gold), #d99a2b);
+  color: #1A1420;
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.98rem;
+}
+
+.article-link{
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  color: var(--ink-dim);
+  text-decoration: none;
+  font-size: 0.78rem;
+}
+.article-link:hover{ color: var(--coral); }
+
+.error-state{ text-align: center; padding: 40px 0; }
+.error-state h1{ font-family: var(--font-display); font-size: 1.4rem; }
+.btn-secondary{
+  display: inline-block;
+  margin-top: 16px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
