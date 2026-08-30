@@ -1,4 +1,4 @@
-/* ===== WishCraft — shared styles ===== */
+/* ===== WishMaker — shared styles ===== */
 
 :root{
   --bg: #1A1420;
@@ -33,6 +33,8 @@ body{
   padding: 0 24px;
 }
 
+a{ color: inherit; }
+
 /* subtle film-grain so the flat dark background doesn't look like a template default */
 .grain{
   position: fixed;
@@ -44,14 +46,25 @@ body{
 }
 
 /* ---------- topbar ---------- */
+/* NOTE: .logo is used as an <a> on every page. text-decoration/color are
+   set explicitly here so it never falls back to the browser's default
+   blue-underlined link style — that mismatch (fine on the homepage span,
+   broken as a link elsewhere) was a real bug seen earlier. */
 .topbar{ padding: 20px 0 0; position: relative; z-index: 2; }
 .topbar-inner{ display: flex; align-items: baseline; justify-content: space-between; }
-.logo{ font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; letter-spacing: 0.01em; }
+.logo{
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  text-decoration: none;
+}
 .logo em{ font-style: normal; color: var(--gold); }
 .tagline{ font-size: 0.75rem; color: var(--ink-dim); }
 
 /* ---------- hero ---------- */
-.hero{ padding: 56px 24px 12px; position: relative; z-index: 2; }
+.hero{ padding: 48px 24px 8px; position: relative; z-index: 2; }
 .eyebrow{
   margin: 0 0 14px;
   font-size: 0.78rem;
@@ -75,16 +88,61 @@ body{
   margin: 0;
 }
 
-/* ---------- card stack (signature element) ---------- */
-.deck{ padding: 48px 24px; position: relative; z-index: 2; }
-.card-stack{
+/* ---------- search ---------- */
+.search-section{ padding: 28px 24px 8px; position: relative; z-index: 3; }
+.search-box{ position: relative; }
+.search-box input{
+  width: 100%;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 16px 18px;
+}
+.search-box input:focus{ outline: none; border-color: var(--gold); }
+.search-box input::placeholder{ color: var(--ink-dim); }
+
+.search-suggestions{
+  position: absolute;
+  left: 0; right: 0; top: calc(100% + 8px);
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 14px 30px -12px rgba(0,0,0,0.6);
+  z-index: 5;
+}
+.suggestion-item{
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 14px 18px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.suggestion-item:last-child{ border-bottom: none; }
+.suggestion-item:hover{ background: rgba(232,179,78,0.1); }
+
+/* ---------- category cards ---------- */
+.deck{
+  padding: 28px 24px 60px;
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
+.no-results{ color: var(--ink-dim); text-align: center; padding: 24px 0; }
+
 .occasion-card{
-  --tilt: 0deg;
   --accent: var(--gold);
   display: block;
   text-decoration: none;
@@ -92,9 +150,8 @@ body{
   border-radius: var(--radius);
   border: 1px solid var(--line);
   background: linear-gradient(155deg, var(--bg-soft), #1E1723);
-  padding: 22px 22px;
-  transform: rotate(var(--tilt));
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  padding: 26px 24px;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 14px 30px -18px rgba(0,0,0,0.6);
   position: relative;
   overflow: hidden;
@@ -108,39 +165,40 @@ body{
   background: var(--accent);
 }
 
-.occasion-card.is-live:hover,
-.occasion-card.is-live:focus-visible{
-  transform: rotate(0deg) translateY(-4px);
+.occasion-card:hover,
+.occasion-card:focus-visible{
+  transform: translateY(-3px);
   border-color: var(--accent);
   box-shadow: 0 20px 40px -18px rgba(0,0,0,0.7);
 }
+.occasion-card:focus-visible{ outline: 2px solid var(--accent); outline-offset: 3px; }
 
-.occasion-card.is-live:focus-visible{ outline: 2px solid var(--accent); outline-offset: 3px; }
-
-.occasion-card.is-soon{
-  opacity: 0.55;
-  cursor: default;
-}
-
-.card-face{ display: flex; align-items: center; gap: 16px; }
-.card-icon{ font-size: 1.8rem; line-height: 1; }
+.card-face{ display: flex; align-items: center; gap: 18px; }
+.card-icon{ font-size: 2.4rem; line-height: 1; flex-shrink: 0; }
+.card-text{ flex: 1; min-width: 0; }
 .card-name{
+  display: block;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   font-weight: 600;
-  flex: 1;
 }
-.card-status{
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+.card-tagline{
+  display: block;
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+  margin-top: 4px;
+}
+.card-count{
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
   color: var(--accent);
   font-weight: 600;
   white-space: nowrap;
+  align-self: flex-start;
+  margin-top: 2px;
 }
-.is-soon .card-status{ color: var(--ink-dim); }
 
-/* ---------- how it works ---------- */
+/* ---------- how it works (kept for reuse on other pages if needed) ---------- */
 .how{ padding: 40px 24px 72px; position: relative; z-index: 2; }
 .how h2{
   font-family: var(--font-display);
@@ -183,13 +241,19 @@ footer{
   position: relative;
   z-index: 2;
 }
-footer a{ color: var(--ink-dim); }
-footer a:hover{ color: var(--ink); }
-
-@media (min-width: 620px){
-  .card-stack{ flex-direction: row; }
-  .occasion-card{ flex: 1; }
+.footer-nav{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 10px;
 }
+.footer-nav a{
+  color: var(--ink-dim);
+  text-decoration: none;
+  font-size: 0.82rem;
+}
+.footer-nav a:hover{ color: var(--ink); }
+.footer-copy{ margin: 0; color: var(--ink-dim); }
 
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior: auto; }
