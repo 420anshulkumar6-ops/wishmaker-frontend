@@ -1,10 +1,32 @@
 /* ===== create.html — form-specific styles ===== */
 
 .form-wrap{
-  padding-top: 44px;
+  padding-top: 36px;
   padding-bottom: 60px;
   position: relative;
   z-index: 2;
+}
+
+.back-link{
+  display: inline-block;
+  color: var(--ink-dim);
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+.back-link:hover{ color: var(--ink); }
+
+.error-state{ text-align: center; padding: 40px 0; }
+.error-state h1{ font-family: var(--font-display); font-size: 1.4rem; margin: 0 0 10px; }
+.btn-secondary{
+  display: inline-block;
+  margin-top: 16px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.9rem;
 }
 
 .form-wrap h1{
@@ -37,7 +59,8 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
   margin: 8px 0 0;
 }
 
-#nameInput{
+#nameInput,
+#quoteInput{
   width: 100%;
   background: var(--bg-soft);
   border: 1px solid var(--line);
@@ -48,11 +71,13 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
   padding: 14px 16px;
   transition: border-color 0.2s ease;
 }
-#nameInput:focus{
+#nameInput:focus,
+#quoteInput:focus{
   outline: none;
   border-color: var(--gold);
 }
-#nameInput::placeholder{ color: var(--ink-dim); }
+#nameInput::placeholder,
+#quoteInput::placeholder{ color: var(--ink-dim); }
 
 /* dropzone */
 .dropzone{
@@ -100,24 +125,6 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
   background: var(--gold);
   transition: width 0.2s ease;
 }
-
-/* design list (same visual language as music list) */
-.design-list{ display: flex; flex-direction: column; gap: 10px; }
-
-.design-option{
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 12px 14px;
-  background: var(--bg-soft);
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-}
-.design-option:has(input:checked){ border-color: var(--gold); }
-.design-option input{ accent-color: var(--gold); }
-.design-option .design-name{ flex: 1; font-size: 0.92rem; }
 
 /* music list */
 .music-list{ display: flex; flex-direction: column; gap: 10px; }
