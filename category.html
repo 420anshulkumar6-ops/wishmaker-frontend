@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choose a design — WishMaker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="category.css">
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="index.html" class="logo">Wish<em>Maker</em></a>
+  </div>
+</header>
+
+<main class="wrap category-wrap">
+
+  <a href="index.html" class="back-link">← All occasions</a>
+
+  <p class="eyebrow" id="categoryEyebrow">occasion</p>
+  <h1 id="categoryTitle">Choose a design</h1>
+  <p class="hero-sub" id="categoryTagline"></p>
+
+  <div class="design-list" id="designList">
+    <!-- populated by script below -->
+  </div>
+
+  <div class="error-state" id="errorState" hidden>
+    <h1>We couldn't find that occasion</h1>
+    <p class="hero-sub">It might have been renamed or removed.</p>
+    <a href="index.html" class="btn-secondary">See all occasions</a>
+  </div>
+
+</main>
+
+<footer class="wrap">
+  <nav class="footer-nav">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="disclaimer.html">Disclaimer</a>
+  </nav>
+  <p class="footer-copy">WishMaker</p>
+</footer>
+
+<script type="module">
+  import { categorySettings } from "./js/category-config.js";
+
+  const params = new URLSearchParams(window.location.search);
+  const themeKey = params.get("theme");
+  const category = categorySettings[themeKey];
+
+  const els = {
+    eyebrow: document.getElementById("categoryEyebrow"),
+    title: document.getElementById("categoryTitle"),
+    tagline: document.getElementById("categoryTagline"),
+    list: document.getElementById("designList"),
+    errorState: document.getElementById("errorState")
+  };
+
+  if (!category) {
+    els.eyebrow.hidden = true;
+    els.title.hidden = true;
+    els.tagline.hidden = true;
+    els.errorState.hidden = false;
+  } else {
+    els.eyebrow.textContent = category.label.toLowerCase();
+    els.title.textContent = `${category.icon || ""} ${category.label}`;
+    els.tagline.textContent = category.tagline || "";
+    document.title = `${category.label} — WishMaker`;
+
+    category.designs.forEach((design) => {
+      const card = document.createElement("div");
+      card.className = "design-card";
+
+      const videoHtml = design.previewVideo
+        ? `<video class="design-preview" src="${design.previewVideo}" muted loop playsinline preload="metadata" controls></video>`
+        : `<div class="design-preview design-preview--placeholder">Preview coming soon</div>`;
+
+      card.innerHTML = `
+        ${videoHtml}
+        <div class="design-info">
+          <h2 class="design-name">${design.name}</h2>
+          <a class="try-btn" href="create.html?theme=${themeKey}&design=${design.id}">Try this design</a>
+          ${design.article ? `<a class="article-link" href="article.html?theme=${themeKey}&design=${design.id}">How to use this design</a>` : ""}
+        </div>
+      `;
+      els.list.appendChild(card);
+    });
+  }
+</script>
+
+</body>
+</html>
