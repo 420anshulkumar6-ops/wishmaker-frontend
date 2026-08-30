@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WishCraft — Video Wishes for WhatsApp Status</title>
-<meta name="description" content="Create a personalised birthday video wish with your friend's name and photo, then share it straight to WhatsApp Status.">
+<title>WishMaker — Video Wishes for WhatsApp Status</title>
+<meta name="description" content="Create a personalised video wish with a name, a photo, and music, then share it straight to WhatsApp Status.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,61 +16,120 @@
 
 <header class="topbar">
   <div class="wrap topbar-inner">
-    <span class="logo">Wish<em>Craft</em></span>
-    <span class="tagline">made for WhatsApp Status</span>
+    <a href="index.html" class="logo">Wish<em>Maker</em></a>
   </div>
 </header>
 
 <main>
   <section class="hero wrap">
-    <p class="eyebrow">pick a moment, make it theirs</p>
-    <h1>A card that plays<br>when you tap it open.</h1>
-    <p class="hero-sub">Add a name, drop in a photo, choose the music — get a short video wish ready to download or send straight to WhatsApp Status.</p>
+    <h1>Wish it. Video it.<br>Status it.</h1>
+    <p class="hero-sub">Pick a moment, add their name and photo, and get a short video wish — ready in under a minute, made for WhatsApp Status.</p>
   </section>
 
-  <section class="deck wrap" aria-label="Choose an occasion">
-    <div class="card-stack">
-
-      <a href="create.html?theme=birthday" class="occasion-card is-live" style="--tilt:-3deg; --accent:#E8B34E;">
-        <span class="card-face">
-          <span class="card-icon">🎂</span>
-          <span class="card-name">Birthday</span>
-          <span class="card-status">ready to make</span>
-        </span>
-      </a>
-
-      <span class="occasion-card is-soon" style="--tilt:2deg; --accent:#F4739E;">
-        <span class="card-face">
-          <span class="card-icon">🎗️</span>
-          <span class="card-name">Raksha Bandhan</span>
-          <span class="card-status">coming soon</span>
-        </span>
-      </span>
-
-      <span class="occasion-card is-soon" style="--tilt:-1.5deg; --accent:#8FBF9F;">
-        <span class="card-face">
-          <span class="card-icon">🪔</span>
-          <span class="card-name">Diwali</span>
-          <span class="card-status">coming soon</span>
-        </span>
-      </span>
-
+  <section class="search-section wrap">
+    <div class="search-box">
+      <input type="text" id="categorySearch" placeholder="Search an occasion — birthday, diwali…" autocomplete="off">
+      <div class="search-suggestions" id="searchSuggestions" hidden></div>
     </div>
   </section>
 
-  <section class="how wrap">
-    <h2>Three steps, one video</h2>
-    <ol class="steps">
-      <li><span class="step-mark">name &amp; photo</span>Tell us who it's for.</li>
-      <li><span class="step-mark">pick a tune</span>Choose from a short list of tracks.</li>
-      <li><span class="step-mark">share it</span>Download the video or send it directly to WhatsApp Status.</li>
-    </ol>
+  <section class="deck wrap" aria-label="Choose an occasion" id="categoryDeck">
+    <!-- populated by script below, from category-config.js -->
   </section>
 </main>
 
 <footer class="wrap">
-  <p>WishCraft · <a href="privacy.html">Privacy</a> · <a href="contact.html">Contact</a></p>
+  <nav class="footer-nav">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="disclaimer.html">Disclaimer</a>
+  </nav>
+  <p class="footer-copy">WishMaker</p>
 </footer>
+
+<script type="module">
+  import { categorySettings } from "./js/category-config.js";
+
+  const deck = document.getElementById("categoryDeck");
+  const searchInput = document.getElementById("categorySearch");
+  const suggestions = document.getElementById("searchSuggestions");
+
+  const categoryEntries = Object.entries(categorySettings);
+
+  function renderCategoryCard(key, cat) {
+    const count = cat.designs.length;
+    const countLabel = count === 1 ? "1 design" : `${count} designs`;
+    const a = document.createElement("a");
+    a.href = `category.html?theme=${key}`;
+    a.className = "occasion-card";
+    a.innerHTML = `
+      <span class="card-face">
+        <span class="card-icon">${cat.icon || "✨"}</span>
+        <span class="card-text">
+          <span class="card-name">${cat.label}</span>
+          <span class="card-tagline">${cat.tagline || ""}</span>
+        </span>
+        <span class="card-count">${countLabel}</span>
+      </span>
+    `;
+    return a;
+  }
+
+  function renderDeck(filterKey) {
+    deck.innerHTML = "";
+    const entries = filterKey
+      ? categoryEntries.filter(([key]) => key === filterKey)
+      : categoryEntries;
+
+    if (entries.length === 0) {
+      deck.innerHTML = `<p class="no-results">No matching occasion — try another search.</p>`;
+      return;
+    }
+    entries.forEach(([key, cat]) => deck.appendChild(renderCategoryCard(key, cat)));
+  }
+
+  renderDeck(null);
+
+  // ---- search with live suggestions (avoids "no results" from typos) ----
+  searchInput.addEventListener("input", () => {
+    const q = searchInput.value.trim().toLowerCase();
+    if (!q) {
+      suggestions.hidden = true;
+      renderDeck(null);
+      return;
+    }
+
+    const matches = categoryEntries.filter(([key, cat]) =>
+      cat.label.toLowerCase().includes(q) || key.toLowerCase().includes(q)
+    );
+
+    if (matches.length === 0) {
+      suggestions.hidden = true;
+      renderDeck("__none__"); // shows the "no matching occasion" state
+      return;
+    }
+
+    suggestions.innerHTML = matches.map(([key, cat]) =>
+      `<button type="button" class="suggestion-item" data-key="${key}">${cat.icon || ""} ${cat.label}</button>`
+    ).join("");
+    suggestions.hidden = false;
+  });
+
+  suggestions.addEventListener("click", (e) => {
+    const btn = e.target.closest(".suggestion-item");
+    if (!btn) return;
+    const key = btn.dataset.key;
+    searchInput.value = categorySettings[key].label;
+    suggestions.hidden = true;
+    renderDeck(key);
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".search-box")) suggestions.hidden = true;
+  });
+</script>
 
 </body>
 </html>
