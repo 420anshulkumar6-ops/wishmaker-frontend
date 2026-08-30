@@ -1,7 +1,8 @@
 // ===== create.js =====
-// Reads ?theme= from the URL, loads that category from categorySettings,
-// lets the user pick a design (if there's more than one), then handles
-// name input, photo preview, music selection, and submission.
+// Reads ?theme= and ?design= from the URL, loads that specific design from
+// category-config.js, shows only the fields that design needs (photo is
+// always required; name and quote show conditionally per design.fields),
+// and handles photo preview, music selection, and submission.
 
 import { categorySettings } from "./category-config.js";
 import { saveWish } from "./firebase-config.js";
@@ -14,92 +15,77 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
 (function () {
 
   const params = new URLSearchParams(window.location.search);
-  const themeKey = params.get("theme") || "birthday";
+  const themeKey = params.get("theme");
+  const designId = params.get("design");
+
   const category = categorySettings[themeKey];
+  const design = category?.designs.find(d => d.id === designId);
 
   const els = {
+    backLink: document.getElementById("backLink"),
     eyebrow: document.getElementById("themeEyebrow"),
     title: document.getElementById("themeTitle"),
     sub: document.getElementById("themeSub"),
-    designField: document.getElementById("designField"),
-    designList: document.getElementById("designList"),
-    nameField: document.getElementById("nameField"),
-    nameInput: document.getElementById("nameInput"),
+    photoField: document.getElementById("photoField"),
     dropzone: document.getElementById("dropzone"),
     dzIcon: document.getElementById("dzIcon"),
     dzText: document.getElementById("dzText"),
     previewImg: document.getElementById("previewImg"),
     photoInput: document.getElementById("photoInput"),
     uploadStatus: document.getElementById("uploadStatus"),
+    nameField: document.getElementById("nameField"),
+    nameInput: document.getElementById("nameInput"),
+    quoteField: document.getElementById("quoteField"),
+    quoteInput: document.getElementById("quoteInput"),
     musicList: document.getElementById("musicList"),
     submitBtn: document.getElementById("submitBtn"),
     formError: document.getElementById("formError"),
     form: document.getElementById("wishForm"),
     renderState: document.getElementById("renderState"),
-    renderMessage: document.getElementById("renderMessage")
+    renderMessage: document.getElementById("renderMessage"),
+    errorState: document.getElementById("errorState")
   };
 
-  // ---- guard: unknown category ----
-  if (!category || !category.designs || category.designs.length === 0) {
-    els.title.textContent = "This card isn't ready yet";
-    els.sub.textContent = "Head back and pick one of the live occasions.";
+  // ---- guard: unknown theme/design combination in the URL ----
+  if (!category || !design) {
     els.form.hidden = true;
+    els.eyebrow.hidden = true;
+    els.title.hidden = true;
+    els.sub.hidden = true;
+    els.backLink.hidden = true;
+    els.errorState.hidden = false;
     return;
   }
 
-  // ---- apply category text ----
-  els.eyebrow.textContent = category.label;
-  els.title.textContent = category.title;
-  els.sub.textContent = category.subtitle;
-  document.title = category.title + " — WishCraft";
+  // ---- back link goes to this design's category page ----
+  els.backLink.href = `category.html?theme=${themeKey}`;
 
-  if (!category.showNameField) {
-    els.nameField.hidden = true;
-  }
+  // ---- apply design text ----
+  els.eyebrow.textContent = category.label.toLowerCase();
+  els.title.textContent = `Make it theirs — ${design.name}`;
+  els.sub.textContent = "Fill in the details below — we'll do the rest.";
+  document.title = `${design.name} — WishMaker`;
 
-  // ---- design selection (only shown if 2+ designs exist) ----
-  let selectedDesign = category.designs[0];
+  // ---- show only the fields this design actually needs ----
+  const fields = design.fields || { photo: true, name: false, quote: false };
+  if (fields.name) els.nameField.hidden = false;
+  if (fields.quote) els.quoteField.hidden = false;
 
-  if (category.designs.length > 1) {
-    els.designField.hidden = false;
-    category.designs.forEach((design, i) => {
-      const row = document.createElement("label");
-      row.className = "design-option";
-      row.innerHTML = `
-        <input type="radio" name="design" value="${design.id}" ${i === 0 ? "checked" : ""}>
-        <span class="design-name">${design.name}</span>
-      `;
-      els.designList.appendChild(row);
-    });
-
-    els.designList.addEventListener("change", (e) => {
-      if (e.target.name !== "design") return;
-      selectedDesign = category.designs.find(d => d.id === e.target.value);
-      buildMusicList(); // a design can override the category's music list
-    });
-  }
-
-  // ---- build music options (design-level music wins, else category-level) ----
+  // ---- build music options from this design's own music list ----
   let selectedMusicId = null;
   let currentAudio = null;
 
-  function buildMusicList() {
-    els.musicList.innerHTML = "";
-    const tracks = selectedDesign.music || category.music;
-
-    tracks.forEach((track, i) => {
-      const row = document.createElement("label");
-      row.className = "music-option";
-      row.innerHTML = `
-        <input type="radio" name="music" value="${track.id}" ${i === 0 ? "checked" : ""}>
-        <span class="track-name">${track.name}</span>
-        <button type="button" class="preview-btn" data-file="${track.file}">Preview</button>
-      `;
-      els.musicList.appendChild(row);
-    });
-    selectedMusicId = tracks[0]?.id || null;
-  }
-  buildMusicList();
+  design.music.forEach((track, i) => {
+    const row = document.createElement("label");
+    row.className = "music-option";
+    row.innerHTML = `
+      <input type="radio" name="music" value="${track.id}" ${i === 0 ? "checked" : ""}>
+      <span class="track-name">${track.name}</span>
+      <button type="button" class="preview-btn" data-file="${track.file}">Preview</button>
+    `;
+    els.musicList.appendChild(row);
+  });
+  selectedMusicId = design.music[0]?.id || null;
 
   els.musicList.addEventListener("change", (e) => {
     if (e.target.name === "music") selectedMusicId = e.target.value;
@@ -154,12 +140,35 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
 
   // ---- form readiness ----
   function checkFormReady() {
-    const nameOk = !category.showNameField || els.nameInput.value.trim().length > 0;
+    const nameOk = !fields.name || els.nameInput.value.trim().length > 0;
     const photoOk = !!selectedFile;
     els.submitBtn.disabled = !(nameOk && photoOk);
   }
 
   els.nameInput?.addEventListener("input", checkFormReady);
+
+  // ---- rotating loading messages while the backend renders ----
+  let loadingInterval = null;
+  function startLoadingMessages() {
+    const stages = [
+      { at: 0,  text: "Waking things up… ✨" },
+      { at: 8,  text: "Almost there, hang tight…" },
+      { at: 18, text: "Setting the scene…" },
+      { at: 30, text: "Still working — free hosting can be slow to start, thanks for waiting…" },
+      { at: 45, text: "Lighting the candles… 🕯️" },
+      { at: 60, text: "Nearly done, this is the last stretch…" }
+    ];
+    let elapsed = 0;
+    loadingInterval = setInterval(() => {
+      elapsed += 1;
+      const stage = [...stages].reverse().find(s => elapsed >= s.at);
+      if (stage) els.renderMessage.textContent = stage.text;
+    }, 1000);
+  }
+  function stopLoadingMessages() {
+    if (loadingInterval) clearInterval(loadingInterval);
+    loadingInterval = null;
+  }
 
   // ---- upload photo to ImgBB, returns the hosted image URL ----
   async function uploadToImgBB(file) {
@@ -191,19 +200,18 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
     els.renderMessage.textContent = "Uploading photo…";
 
     try {
-      // 1. Upload the photo to ImgBB — we only store the URL, not the file itself
       const photoUrl = await uploadToImgBB(selectedFile);
 
-      // 2. Ask the backend to render the video (background + photo + name + music)
-      els.renderMessage.textContent = "Lighting the candles… ✨";
+      startLoadingMessages();
 
       const renderResponse = await fetch(VIDEO_RENDER_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           theme: themeKey,
-          designId: selectedDesign.id,
-          name: category.showNameField ? els.nameInput.value.trim() : null,
+          designId: design.id,
+          name: fields.name ? els.nameInput.value.trim() : null,
+          quote: fields.quote ? els.quoteInput.value.trim() : null,
           musicId: selectedMusicId,
           photoUrl
         })
@@ -211,21 +219,23 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
 
       if (!renderResponse.ok) throw new Error("Video rendering failed");
       const { videoUrl } = await renderResponse.json();
+      stopLoadingMessages();
+      els.renderMessage.textContent = "Almost ready…";
 
-      // 3. Save the wish record in Firestore — wish.html reads this by id
       const wishId = await saveWish({
         theme: themeKey,
-        designId: selectedDesign.id,
-        name: category.showNameField ? els.nameInput.value.trim() : null,
+        designId: design.id,
+        name: fields.name ? els.nameInput.value.trim() : null,
+        quote: fields.quote ? els.quoteInput.value.trim() : null,
         musicId: selectedMusicId,
         photoUrl,
         videoUrl
       });
 
-      // 4. Send the user to their shareable link
       window.location.href = `wish.html?id=${wishId}`;
 
     } catch (err) {
+      stopLoadingMessages();
       els.form.hidden = false;
       els.renderState.hidden = true;
       els.formError.textContent = "Something went wrong — please try again.";
