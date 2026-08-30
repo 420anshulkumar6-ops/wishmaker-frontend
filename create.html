@@ -34,12 +34,28 @@
     <!-- Photo upload: always present, every design needs a photo -->
     <div class="field" id="photoField">
       <label for="photoInput">Their photo</label>
+
       <label class="dropzone" id="dropzone" for="photoInput">
         <span class="dz-icon" id="dzIcon">📷</span>
         <span class="dz-text" id="dzText">Tap to choose a photo</span>
-        <img id="previewImg" class="dz-preview" alt="" hidden>
       </label>
       <input type="file" id="photoInput" name="photo" accept="image/*" hidden>
+
+      <!-- Crop UI: shown only after a photo is chosen. The circular mask
+           previews exactly what the final video will show. -->
+      <div class="crop-editor" id="cropEditor" hidden>
+        <div class="crop-stage" id="cropStage">
+          <img id="cropImg" alt="" draggable="false">
+          <div class="crop-mask"></div>
+        </div>
+        <label class="crop-zoom-row">
+          <span>Zoom</span>
+          <input type="range" id="cropZoom" min="100" max="300" value="100" step="1">
+        </label>
+        <p class="field-hint">Drag the photo to reposition it. This circle is exactly what will show in the video.</p>
+        <button type="button" class="btn-secondary-inline" id="changePhotoBtn">Choose a different photo</button>
+      </div>
+
       <p class="field-hint" id="uploadStatus">A close-up, well-lit photo works best. Shown in a circular frame.</p>
     </div>
 
