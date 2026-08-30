@@ -30,8 +30,12 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
     dropzone: document.getElementById("dropzone"),
     dzIcon: document.getElementById("dzIcon"),
     dzText: document.getElementById("dzText"),
-    previewImg: document.getElementById("previewImg"),
     photoInput: document.getElementById("photoInput"),
+    cropEditor: document.getElementById("cropEditor"),
+    cropStage: document.getElementById("cropStage"),
+    cropImg: document.getElementById("cropImg"),
+    cropZoom: document.getElementById("cropZoom"),
+    changePhotoBtn: document.getElementById("changePhotoBtn"),
     uploadStatus: document.getElementById("uploadStatus"),
     nameField: document.getElementById("nameField"),
     nameInput: document.getElementById("nameInput"),
@@ -103,12 +107,36 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
     currentAudio.onended = () => { e.target.textContent = "Preview"; };
   });
 
-  // ---- photo selection + local preview ----
+  // ---- photo selection + circular crop/zoom/reposition ----
+  // The crop stage is a fixed-size circle (240px, matches .crop-stage CSS).
+  // The image is drawn larger than the circle and can be dragged/zoomed;
+  // on submit, a canvas renders exactly what's visible inside the circle
+  // as a new square image, which is what actually gets uploaded — so what
+  // the user sees here is exactly what ends up in the video.
+  const STAGE_SIZE = 240;
   let selectedFile = null;
+  let naturalImg = null;      // the loaded <img> element, for canvas drawing later
+  let imgState = { scale: 1, minScale: 1, x: 0, y: 0 };
+  let dragging = false;
+  let dragStart = { x: 0, y: 0, imgX: 0, imgY: 0 };
 
-  els.dropzone.addEventListener("click", (e) => {
-    if (e.target === els.previewImg) els.photoInput.click();
-  });
+  function applyImgTransform() {
+    els.cropImg.style.transform =
+      `translate(-50%, -50%) translate(${imgState.x}px, ${imgState.y}px) scale(${imgState.scale})`;
+  }
+
+  function clampPosition() {
+    // Prevents dragging the image far enough that empty space shows inside the circle.
+    const displayedW = naturalImg.naturalWidth * (STAGE_SIZE / Math.min(naturalImg.naturalWidth, naturalImg.naturalHeight)) * imgState.scale;
+    const displayedH = naturalImg.naturalHeight * (STAGE_SIZE / Math.min(naturalImg.naturalWidth, naturalImg.naturalHeight)) * imgState.scale;
+    const maxX = Math.max(0, (displayedW - STAGE_SIZE) / 2);
+    const maxY = Math.max(0, (displayedH - STAGE_SIZE) / 2);
+    imgState.x = Math.min(maxX, Math.max(-maxX, imgState.x));
+    imgState.y = Math.min(maxY, Math.max(-maxY, imgState.y));
+  }
+
+  els.dropzone.addEventListener("click", () => els.photoInput.click());
+  els.changePhotoBtn.addEventListener("click", () => els.photoInput.click());
 
   els.photoInput.addEventListener("change", () => {
     const file = els.photoInput.files[0];
@@ -128,15 +156,84 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      els.previewImg.src = e.target.result;
-      els.previewImg.hidden = false;
-      els.dzIcon.hidden = true;
-      els.dzText.textContent = "Tap to change photo";
+      const img = new Image();
+      img.onload = () => {
+        naturalImg = img;
+        els.cropImg.src = e.target.result;
+
+        // fill the circle completely regardless of the photo's own aspect ratio
+        const fillScale = STAGE_SIZE / Math.min(img.naturalWidth, img.naturalHeight);
+        els.cropImg.style.width = (img.naturalWidth * fillScale) + "px";
+        els.cropImg.style.height = (img.naturalHeight * fillScale) + "px";
+
+        imgState = { scale: 1, minScale: 1, x: 0, y: 0 };
+        els.cropZoom.value = 100;
+        applyImgTransform();
+
+        els.dropzone.hidden = true;
+        els.cropEditor.hidden = false;
+        checkFormReady();
+      };
+      img.src = e.target.result;
     };
     reader.readAsDataURL(file);
-
-    checkFormReady();
   });
+
+  // ---- drag to reposition ----
+  els.cropStage.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    dragStart = { x: e.clientX, y: e.clientY, imgX: imgState.x, imgY: imgState.y };
+    els.cropStage.setPointerCapture(e.pointerId);
+  });
+  els.cropStage.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    imgState.x = dragStart.imgX + (e.clientX - dragStart.x);
+    imgState.y = dragStart.imgY + (e.clientY - dragStart.y);
+    clampPosition();
+    applyImgTransform();
+  });
+  els.cropStage.addEventListener("pointerup", () => { dragging = false; });
+  els.cropStage.addEventListener("pointercancel", () => { dragging = false; });
+
+  // ---- zoom slider (100 = fills the circle exactly, 300 = 3x zoomed in) ----
+  els.cropZoom.addEventListener("input", () => {
+    imgState.scale = els.cropZoom.value / 100;
+    clampPosition();
+    applyImgTransform();
+  });
+
+  /**
+   * Renders exactly what's visible inside the crop circle to a new square
+   * canvas, and returns it as a File ready for upload. This is what makes
+   * "what you see is what you get" true — the backend still applies its
+   * own circular mask on render, but the framing/zoom the user chose here
+   * is baked into the image it receives.
+   */
+  function getCroppedPhotoFile() {
+    return new Promise((resolve) => {
+      const canvas = document.createElement("canvas");
+      const outputSize = 600; // upload resolution, independent of the on-screen 240px stage
+      canvas.width = outputSize;
+      canvas.height = outputSize;
+      const ctx = canvas.getContext("2d");
+
+      const fillScale = STAGE_SIZE / Math.min(naturalImg.naturalWidth, naturalImg.naturalHeight);
+      const displayedW = naturalImg.naturalWidth * fillScale * imgState.scale;
+      const displayedH = naturalImg.naturalHeight * fillScale * imgState.scale;
+
+      // Convert the on-screen stage position/scale into source-image coordinates.
+      const outputScale = outputSize / STAGE_SIZE;
+      const drawW = displayedW * outputScale;
+      const drawH = displayedH * outputScale;
+      const drawX = (outputSize / 2) + (imgState.x * outputScale) - (drawW / 2);
+      const drawY = (outputSize / 2) + (imgState.y * outputScale) - (drawH / 2);
+
+      ctx.drawImage(naturalImg, drawX, drawY, drawW, drawH);
+      canvas.toBlob((blob) => {
+        resolve(new File([blob], "cropped-photo.jpg", { type: "image/jpeg" }));
+      }, "image/jpeg", 0.92);
+    });
+  }
 
   // ---- form readiness ----
   function checkFormReady() {
@@ -200,7 +297,8 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
     els.renderMessage.textContent = "Uploading photo…";
 
     try {
-      const photoUrl = await uploadToImgBB(selectedFile);
+      const croppedFile = await getCroppedPhotoFile();
+      const photoUrl = await uploadToImgBB(croppedFile);
 
       startLoadingMessages();
 
