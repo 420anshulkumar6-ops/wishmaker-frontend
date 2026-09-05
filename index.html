@@ -28,8 +28,8 @@
 <main>
   <section class="hero wrap" id="top">
     <p class="eyebrow">WhatsApp Status Ready</p>
-    <h1>Wish it. <span class="accent">Video</span> it.<br>Status it.</h1>
-    <p class="hero-sub">Pick a moment, add their name and photo, and get a short video wish — ready in under a minute, made for WhatsApp Status.</p>
+    <h1>Create <span class="accent">Magic</span> for Every Occasion</h1>
+    <p class="hero-sub">Personalised video wishes with your photo and music — ready in 30 seconds.</p>
     <a href="#categoryDeck" class="cta-btn">✨ Create a Wish</a>
   </section>
 
@@ -41,15 +41,17 @@
   </section>
 
   <div class="wrap" style="padding-top:16px;">
-    <div class="deck-label"><h2>Choose an Occasion</h2><a href="#categoryDeck" class="see-all">See all →</a></div>
+    <div class="deck-label"><h2>Create a Video</h2><a href="themes.html" class="see-all">See all →</a></div>
   </div>
   <section class="deck wrap" aria-label="Choose an occasion" id="categoryDeck">
     <!-- populated by script below, from category-config.js -->
   </section>
 
-  <section class="wrap" id="blog" style="padding-top:20px;">
-    <div class="deck-label"><h2>From the Blog</h2><a href="#blog" class="see-all">See all blog →</a></div>
-    <div class="blog-grid" id="blogDeck"></div>
+  <section class="blog-band" id="blog">
+    <div class="wrap" style="padding-top:36px; padding-bottom:36px;">
+      <div class="deck-label"><h2>Wishing Blog</h2><a href="articles.html" class="see-all">See all blog →</a></div>
+      <div class="blog-grid" id="blogDeck"></div>
+    </div>
   </section>
 </main>
 
@@ -78,12 +80,19 @@
   // back to a generic purple gradient if a key is missing.
   const categoryGradients = {
     birthday: "linear-gradient(160deg, #4a2540, #241C2C 55%, #3a2416)",
+    rakhi: "linear-gradient(160deg, #3a2a12, #241C2C 55%, #3a2a45)",
+    diwali: "linear-gradient(160deg, #3a2f10, #241C2C 55%, #2e1c30)",
+    anniversary: "linear-gradient(160deg, #3a1c30, #241C2C 55%, #2c2040)",
+  };
+  const themeEyebrow = {
+    birthday: "Celebrate",
+    rakhi: "Festival",
+    diwali: "Lights",
+    anniversary: "Love",
   };
   const defaultGradient = "linear-gradient(160deg, #2e2438, #241C2C 55%, #241C2C)";
 
   function renderCategoryCard(key, cat) {
-    const count = cat.designs.length;
-    const countLabel = count === 1 ? "1 design" : `${count} designs`;
     const a = document.createElement("a");
     a.href = `category.html?theme=${key}`;
     a.className = "occasion-card";
@@ -92,7 +101,7 @@
       <span class="card-emoji">${cat.icon || "✨"}</span>
       <span class="card-overlay"></span>
       <span class="card-content">
-        <span class="card-eyebrow">${countLabel}</span>
+        <span class="card-eyebrow">${themeEyebrow[key] || "Wish"}</span>
         <span class="card-name">${cat.label}</span>
         <span class="card-tagline">${cat.tagline || ""}</span>
         <span class="card-cta">Use This Card</span>
@@ -156,10 +165,10 @@
 
   // ---- blog preview cards (full article pages come in a later step) ----
   const blogArticles = [
-    { emoji: "🎬", title: "How to Make a WhatsApp Status Video Wish in 30 Seconds", desc: "A simple step-by-step guide to creating a personalised video wish with your photo and music.", time: "4 min read" },
-    { emoji: "🎗️", title: "15 Heartfelt Raksha Bandhan Wish Ideas for Your Brother or Sister", desc: "Sweet, funny, and touching message ideas to pair with your video wish.", time: "5 min read" },
-    { emoji: "🎂", title: "How to Write a Birthday Wish They'll Actually Remember", desc: "Move past “Happy Birthday” with lines that feel personal and heartfelt.", time: "4 min read" },
-    { emoji: "🪔", title: "Diwali Wishes and Message Ideas for Family, Friends and WhatsApp", desc: "Warm, festive message ideas for everyone on your list this Diwali.", time: "4 min read" },
+    { emoji: "🎬", title: "How to Make a WhatsApp Status Video Wish in 30 Seconds", desc: "A simple step-by-step guide to creating a personalised video wish with your photo and music, and sharing it on WhatsApp Status so everyone sees it.", time: "4 min read" },
+    { emoji: "🪢", title: "15 Heartfelt Raksha Bandhan Wish Ideas for Your Brother or Sister", desc: "Stuck on what to write this Rakhi? Here are warm, funny and emotional Raksha Bandhan wish ideas you can use in your video wish, message or WhatsApp Status.", time: "5 min read" },
+    { emoji: "🎂", title: "How to Write a Birthday Wish They'll Actually Remember", desc: "Move beyond \"Happy Birthday, have a great year\". Practical tips and ready-to-use lines for birthday wishes that feel personal — plus how to turn one into a video wish.", time: "4 min read" },
+    { emoji: "🪔", title: "Diwali Wishes and Message Ideas for Family, Friends and WhatsApp", desc: "A collection of warm Diwali wishes — traditional, modern and short Status-ready lines — plus tips for sending a festival greeting that stands out this year.", time: "4 min read" },
   ];
   const blogDeck = document.getElementById("blogDeck");
   blogArticles.forEach(a => {
