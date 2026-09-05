@@ -101,27 +101,116 @@ it directly as a video file.`
     ]
   }
 
-  // Next category (example — not active yet):
-  // diwali: {
-  //   label: "Diwali Wish",
-  //   icon: "🪔",
-  //   tagline: "Diyas, lights, and warm wishes for the festival.",
-  //   designs: [
-  //     {
-  //       id: "diwali-1",
-  //       name: "...",
-  //       backgroundVideo: "assets/videos/bg_diwali1.mp4",
-  //       previewVideo: "assets/previews/preview_diwali1.mp4",
-  //       videoDurationSeconds: 18,
-  //       sourceClipSeconds: 0,
-  //       fields: { photo: true, name: false, quote: true },
-  //       photoPosition: { top: "..%", left: "..%", width: "..%", borderRadius: "12px" },
-  //       namePosition: { top: "..%" },
-  //       music: [ ... ],
-  //       article: { title: "...", body: "..." }
-  //     }
-  //   ]
-  // }
+  ,rakhi: {
+    label: "Raksha Bandhan",
+    icon: "🪢",
+    tagline: "The bond of a lifetime.",
+
+    designs: [
+      {
+        id: "rakhi-1",
+        name: "Threads of Love",
+        backgroundVideo: "assets/videos/bg_rakhi1.mp4", // ⬅️ ADD THIS FILE
+        previewVideo: "assets/previews/preview_rakhi1.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: false, quote: false },
+
+        // ⚠️ placeholder position, copied from birthday — re-tune this in
+        // dev-tools/position-tester-live.html once bg_rakhi1.mp4 is added
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Behna O Behna",         file: "music/rakhi-1.mp3" }, // ⬅️ ADD
+          { id: "m2", name: "Phoolon Ka Taaron Ka",  file: "music/rakhi-2.mp3" }  // ⬅️ ADD
+        ],
+
+        article: {
+          title: "How to make a Raksha Bandhan video wish with the Threads of Love design",
+          body: `This design pairs a warm rakhi-themed background with a circular photo frame,
+so your sibling's photo is the first thing they see. Choose a clear photo — a childhood photo
+of the two of you together often gets the biggest smile. Pick one of the background tracks and
+render your video in under a minute, ready to share on WhatsApp Status.`
+        }
+      }
+    ]
+  }
+
+  ,diwali: {
+    label: "Diwali Wish",
+    icon: "🪔",
+    tagline: "Diyas, sparkles & sweets.",
+
+    designs: [
+      {
+        id: "diwali-1",
+        name: "Festival of Lights",
+        backgroundVideo: "assets/videos/bg_diwali1.mp4", // ⬅️ ADD THIS FILE
+        previewVideo: "assets/previews/preview_diwali1.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        // ⚠️ placeholder position, copied from birthday — re-tune this in
+        // dev-tools/position-tester-live.html once bg_diwali1.mp4 is added
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "24px" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Deepavali Aarti",     file: "music/diwali-1.mp3" }, // ⬅️ ADD
+          { id: "m2", name: "Festival of Lights",  file: "music/diwali-2.mp3" }  // ⬅️ ADD
+        ],
+
+        article: {
+          title: "How to make a Diwali video wish with the Festival of Lights design",
+          body: `This design pairs a glowing diya-and-lights background with your photo and name,
+perfect for greeting family and friends this Diwali. Add a bright, well-lit photo, type the name
+you want to greet, and pick a festive track — your video renders in under a minute and is ready
+to share on WhatsApp Status.`
+        }
+      }
+    ]
+  }
+
+  ,anniversary: {
+    label: "Anniversary",
+    icon: "💍",
+    tagline: "For the two of you.",
+
+    designs: [
+      {
+        id: "anniversary-1",
+        name: "Forever Yours",
+        backgroundVideo: "assets/videos/bg_anniversary1.mp4", // ⬅️ ADD THIS FILE
+        previewVideo: "assets/previews/preview_anniversary1.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        // ⚠️ placeholder position, copied from birthday — re-tune this in
+        // dev-tools/position-tester-live.html once bg_anniversary1.mp4 is added
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Forever Yours",  file: "music/anniversary-1.mp3" }, // ⬅️ ADD
+          { id: "m2", name: "Slow Romance",   file: "music/anniversary-2.mp3" }  // ⬅️ ADD
+        ],
+
+        article: {
+          title: "How to make an anniversary video wish with the Forever Yours design",
+          body: `This design puts your couple photo and names front and centre against a warm,
+romantic background — a lovely way to celebrate another year together. Add a favourite photo of
+the two of you, your names, and a slow romantic track, and your video is ready to share in under
+a minute.`
+        }
+      }
+    ]
+  }
 
 };
 
