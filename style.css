@@ -86,7 +86,8 @@ a{ color: inherit; }
   font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--coral);
+  color: var(--gold);
+  opacity: 0.85;
   font-weight: 600;
 }
 .hero h1{
@@ -293,6 +294,13 @@ footer{
 .footer-copy{ margin: 0; color: var(--ink-dim); opacity: 0.6; font-size: 0.75rem; }
 
 /* ---------- blog preview ---------- */
+.blog-band{
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: rgba(36,28,44,0.4);
+  position: relative; z-index: 2;
+  margin-top: 20px;
+}
 .blog-grid{ display: flex; flex-direction: column; gap: 14px; }
 .blog-card{
   display: flex; gap: 14px; align-items: flex-start;
