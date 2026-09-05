@@ -74,9 +74,13 @@ a{ color: inherit; }
 .nav-links{ display: flex; gap: 16px; font-size: 0.75rem; font-weight: 600; }
 .nav-links a{ color: var(--ink-dim); text-decoration: none; transition: color 0.15s ease; }
 .nav-links a:hover{ color: var(--ink); }
+.nav-links a.primary{ color: var(--gold); }
+.nav-links a.primary:hover{ color: var(--coral); }
+.nav-links a.accent{ color: var(--coral); }
+.nav-links a.accent:hover{ color: var(--gold); }
 
 /* ---------- hero ---------- */
-.hero{ padding: 48px 24px 8px; position: relative; z-index: 2; }
+.hero{ padding: 48px 24px 8px; position: relative; z-index: 2; text-align: center; }
 .eyebrow{
   margin: 0 0 14px;
   font-size: 0.78rem;
@@ -97,7 +101,7 @@ a{ color: inherit; }
   max-width: 46ch;
   color: var(--ink-dim);
   font-size: 1rem;
-  margin: 0;
+  margin: 0 auto;
 }
 .hero h1 .accent{ color: var(--coral); }
 .cta-btn{
@@ -163,6 +167,8 @@ a{ color: inherit; }
   font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
   color: var(--gold); font-weight: 700; margin: 0;
 }
+.deck-label .see-all{ font-size: 0.85rem; font-weight: 600; color: var(--coral); text-decoration: none; }
+.deck-label .see-all:hover{ color: var(--gold); }
 
 .deck{
   padding: 8px 24px 60px;
@@ -264,25 +270,27 @@ a{ color: inherit; }
 
 /* ---------- footer ---------- */
 footer{
-  padding: 28px 24px 40px;
+  padding: 40px 24px 40px;
   color: var(--ink-dim);
   font-size: 0.8rem;
   position: relative;
   z-index: 2;
+  text-align: center;
 }
 .footer-nav{
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
-  margin-bottom: 10px;
+  justify-content: center;
+  gap: 18px 24px;
+  margin-bottom: 24px;
 }
 .footer-nav a{
   color: var(--ink-dim);
   text-decoration: none;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
 }
 .footer-nav a:hover{ color: var(--ink); }
-.footer-copy{ margin: 0; color: var(--ink-dim); }
+.footer-copy{ margin: 0; color: var(--ink-dim); opacity: 0.6; font-size: 0.75rem; }
 
 /* ---------- blog preview ---------- */
 .blog-grid{ display: flex; flex-direction: column; gap: 14px; }
