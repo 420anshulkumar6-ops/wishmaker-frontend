@@ -16,14 +16,21 @@
 
 <header class="topbar">
   <div class="wrap topbar-inner">
-    <a href="index.html" class="logo">Wish<em>Maker</em></a>
+    <a href="index.html" class="logo">WishMaker</a>
+    <div class="nav-links">
+      <a href="#top">Home</a>
+      <a href="#categoryDeck">Create a Video Wish</a>
+      <a href="#blog">Blog</a>
+    </div>
   </div>
 </header>
 
 <main>
-  <section class="hero wrap">
-    <h1>Wish it. Video it.<br>Status it.</h1>
+  <section class="hero wrap" id="top">
+    <p class="eyebrow">WhatsApp Status Ready</p>
+    <h1>Wish it. <span class="accent">Video</span> it.<br>Status it.</h1>
     <p class="hero-sub">Pick a moment, add their name and photo, and get a short video wish — ready in under a minute, made for WhatsApp Status.</p>
+    <a href="#categoryDeck" class="cta-btn">✨ Create a Wish</a>
   </section>
 
   <section class="search-section wrap">
@@ -33,8 +40,16 @@
     </div>
   </section>
 
+  <div class="wrap" style="padding-top:16px;">
+    <div class="deck-label"><h2>Choose an Occasion</h2></div>
+  </div>
   <section class="deck wrap" aria-label="Choose an occasion" id="categoryDeck">
     <!-- populated by script below, from category-config.js -->
+  </section>
+
+  <section class="wrap" id="blog" style="padding-top:20px;">
+    <div class="deck-label"><h2>From the Blog</h2></div>
+    <div class="blog-grid" id="blogDeck"></div>
   </section>
 </main>
 
@@ -58,20 +73,29 @@
 
   const categoryEntries = Object.entries(categorySettings);
 
+  // Per-category background gradient for the card art. Add a new entry
+  // here whenever you add a new category in category-config.js — falls
+  // back to a generic purple gradient if a key is missing.
+  const categoryGradients = {
+    birthday: "linear-gradient(160deg, #4a2540, #241C2C 55%, #3a2416)",
+  };
+  const defaultGradient = "linear-gradient(160deg, #2e2438, #241C2C 55%, #241C2C)";
+
   function renderCategoryCard(key, cat) {
     const count = cat.designs.length;
     const countLabel = count === 1 ? "1 design" : `${count} designs`;
     const a = document.createElement("a");
     a.href = `category.html?theme=${key}`;
     a.className = "occasion-card";
+    a.style.background = categoryGradients[key] || defaultGradient;
     a.innerHTML = `
-      <span class="card-face">
-        <span class="card-icon">${cat.icon || "✨"}</span>
-        <span class="card-text">
-          <span class="card-name">${cat.label}</span>
-          <span class="card-tagline">${cat.tagline || ""}</span>
-        </span>
-        <span class="card-count">${countLabel}</span>
+      <span class="card-emoji">${cat.icon || "✨"}</span>
+      <span class="card-overlay"></span>
+      <span class="card-content">
+        <span class="card-eyebrow">${countLabel}</span>
+        <span class="card-name">${cat.label}</span>
+        <span class="card-tagline">${cat.tagline || ""}</span>
+        <span class="card-cta">Use This Card</span>
       </span>
     `;
     return a;
@@ -128,6 +152,29 @@
 
   document.addEventListener("click", (e) => {
     if (!e.target.closest(".search-box")) suggestions.hidden = true;
+  });
+
+  // ---- blog preview cards (full article pages come in a later step) ----
+  const blogArticles = [
+    { emoji: "🎬", title: "How to Make a WhatsApp Status Video Wish in 30 Seconds", desc: "A simple step-by-step guide to creating a personalised video wish with your photo and music.", time: "4 min read" },
+    { emoji: "🎗️", title: "15 Heartfelt Raksha Bandhan Wish Ideas for Your Brother or Sister", desc: "Sweet, funny, and touching message ideas to pair with your video wish.", time: "5 min read" },
+    { emoji: "🎂", title: "How to Write a Birthday Wish They'll Actually Remember", desc: "Move past “Happy Birthday” with lines that feel personal and heartfelt.", time: "4 min read" },
+    { emoji: "🪔", title: "Diwali Wishes and Message Ideas for Family, Friends and WhatsApp", desc: "Warm, festive message ideas for everyone on your list this Diwali.", time: "4 min read" },
+  ];
+  const blogDeck = document.getElementById("blogDeck");
+  blogArticles.forEach(a => {
+    const el = document.createElement("a");
+    el.href = "#";
+    el.className = "blog-card";
+    el.innerHTML = `
+      <span class="blog-emoji">${a.emoji}</span>
+      <span>
+        <span class="blog-title">${a.title}</span>
+        <span class="blog-desc">${a.desc}</span>
+        <span class="blog-meta">${a.time}</span>
+      </span>
+    `;
+    blogDeck.appendChild(el);
   });
 </script>
 
