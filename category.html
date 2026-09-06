@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Choose a design — WishMaker</title>
+<title>Choose a Theme — WishMaker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,7 +16,12 @@
 
 <header class="topbar">
   <div class="wrap topbar-inner">
-    <a href="index.html" class="logo">Wish<em>Maker</em></a>
+    <a href="index.html" class="logo"><span class="logo-wish">Wish</span><span class="logo-maker">Maker</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#categoryDeck">Create a Video Wish</a>
+      <a href="articles.html">Blog</a>
+    </div>
   </div>
 </header>
 
@@ -25,12 +30,14 @@
   <a href="index.html" class="back-link">← All occasions</a>
 
   <p class="eyebrow" id="categoryEyebrow">occasion</p>
-  <h1 id="categoryTitle">Choose a design</h1>
+  <h1 id="categoryTitle">Choose a Theme</h1>
   <p class="hero-sub" id="categoryTagline"></p>
 
-  <div class="design-list" id="designList">
+  <div class="design-grid" id="designList">
     <!-- populated by script below -->
   </div>
+
+  <button class="load-more-btn" id="loadMoreBtn" hidden>Load More Themes</button>
 
   <div class="error-state" id="errorState" hidden>
     <h1>We couldn't find that occasion</h1>
@@ -40,6 +47,12 @@
 
 </main>
 
+<!-- Fullscreen preview modal (9:16) -->
+<div class="preview-modal" id="previewModal" hidden>
+  <button class="preview-close" id="previewClose" aria-label="Close preview">✕</button>
+  <video class="preview-modal-video" id="previewModalVideo" playsinline controls></video>
+</div>
+
 <footer class="wrap">
   <nav class="footer-nav">
     <a href="index.html">Home</a>
@@ -48,11 +61,16 @@
     <a href="contact.html">Contact Us</a>
     <a href="disclaimer.html">Disclaimer</a>
   </nav>
-  <p class="footer-copy">WishMaker</p>
+  <p class="footer-copy">© 2026 WishMaker. All rights reserved.</p>
 </footer>
 
 <script type="module">
   import { categorySettings } from "./js/category-config.js";
+
+  // First batch shows 8 (4 rows of 2). Every "Load More" click after that
+  // reveals 4 more, until all themes for this occasion are shown.
+  const INITIAL_COUNT = 8;
+  const LOAD_MORE_COUNT = 4;
 
   const params = new URLSearchParams(window.location.search);
   const themeKey = params.get("theme");
@@ -63,8 +81,82 @@
     title: document.getElementById("categoryTitle"),
     tagline: document.getElementById("categoryTagline"),
     list: document.getElementById("designList"),
-    errorState: document.getElementById("errorState")
+    loadMoreBtn: document.getElementById("loadMoreBtn"),
+    errorState: document.getElementById("errorState"),
   };
+
+  const modal = document.getElementById("previewModal");
+  const modalVideo = document.getElementById("previewModalVideo");
+  const modalClose = document.getElementById("previewClose");
+
+  function openPreview(src) {
+    modalVideo.src = src;
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+    modalVideo.play().catch(() => {});
+  }
+  function closePreview() {
+    modal.hidden = true;
+    modalVideo.pause();
+    modalVideo.removeAttribute("src");
+    modalVideo.load();
+    document.body.style.overflow = "";
+  }
+  modalClose.addEventListener("click", closePreview);
+  modal.addEventListener("click", (e) => { if (e.target === modal) closePreview(); });
+
+  let visibleCount = INITIAL_COUNT;
+
+  function renderCard(design) {
+    const card = document.createElement("div");
+    card.className = "design-card";
+
+    const previewHtml = design.previewVideo
+      ? `
+        <div class="design-preview-wrap">
+          <video class="design-preview" src="${design.previewVideo}" muted loop playsinline preload="metadata"></video>
+          <button class="play-btn" aria-label="Play preview" data-src="${design.previewVideo}">▶</button>
+        </div>`
+      : `<div class="design-preview-wrap design-preview--placeholder">Preview coming soon</div>`;
+
+    card.innerHTML = `
+      ${previewHtml}
+      <div class="design-info">
+        <p class="design-name">${design.name}</p>
+        <a class="try-btn" href="create.html?theme=${themeKey}&design=${design.id}">Use This Theme</a>
+        ${design.article ? `<a class="article-link" href="article.html?theme=${themeKey}&design=${design.id}">How to use this theme</a>` : ""}
+      </div>
+    `;
+
+    const playBtn = card.querySelector(".play-btn");
+    if (playBtn) {
+      playBtn.addEventListener("click", () => openPreview(playBtn.dataset.src));
+    }
+    // tapping the thumbnail itself also opens the fullscreen preview
+    const thumb = card.querySelector(".design-preview");
+    if (thumb) {
+      thumb.addEventListener("click", () => openPreview(design.previewVideo));
+    }
+
+    return card;
+  }
+
+  function renderList() {
+    els.list.innerHTML = "";
+    const toShow = category.designs.slice(0, visibleCount);
+    toShow.forEach((design) => els.list.appendChild(renderCard(design)));
+
+    if (visibleCount < category.designs.length) {
+      els.loadMoreBtn.hidden = false;
+    } else {
+      els.loadMoreBtn.hidden = true;
+    }
+  }
+
+  els.loadMoreBtn.addEventListener("click", () => {
+    visibleCount += LOAD_MORE_COUNT;
+    renderList();
+  });
 
   if (!category) {
     els.eyebrow.hidden = true;
@@ -76,25 +168,7 @@
     els.title.textContent = `${category.icon || ""} ${category.label}`;
     els.tagline.textContent = category.tagline || "";
     document.title = `${category.label} — WishMaker`;
-
-    category.designs.forEach((design) => {
-      const card = document.createElement("div");
-      card.className = "design-card";
-
-      const videoHtml = design.previewVideo
-        ? `<video class="design-preview" src="${design.previewVideo}" muted loop playsinline preload="metadata" controls></video>`
-        : `<div class="design-preview design-preview--placeholder">Preview coming soon</div>`;
-
-      card.innerHTML = `
-        ${videoHtml}
-        <div class="design-info">
-          <h2 class="design-name">${design.name}</h2>
-          <a class="try-btn" href="create.html?theme=${themeKey}&design=${design.id}">Try this design</a>
-          ${design.article ? `<a class="article-link" href="article.html?theme=${themeKey}&design=${design.id}">How to use this design</a>` : ""}
-        </div>
-      `;
-      els.list.appendChild(card);
-    });
+    renderList();
   }
 </script>
 
