@@ -1,4 +1,4 @@
-/* ===== category.html — design list within one occasion ===== */
+/* ===== category.html — theme grid within one occasion ===== */
 
 .category-wrap{
   padding-top: 36px;
@@ -22,67 +22,107 @@
   font-size: clamp(1.6rem, 6vw, 2.1rem);
   margin: 0 0 10px;
 }
-.category-wrap .hero-sub{ margin-bottom: 32px; }
+.category-wrap .hero-sub{ margin-bottom: 24px; }
 
-.design-list{
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+/* 2 columns — left/right — sized so ~4 cards (2 rows) fit on one screen */
+.design-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 .design-card{
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: 14px;
   background: var(--bg-soft);
   overflow: hidden;
 }
 
-.design-preview{
+.design-preview-wrap{
+  position: relative;
   width: 100%;
   aspect-ratio: 9 / 16;
-  max-height: 420px;
+  background: #000;
+}
+.design-preview{
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
-  background: #000;
 }
 .design-preview--placeholder{
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--ink-dim);
-  font-size: 0.85rem;
+  font-size: 0.7rem;
+  text-align: center;
+  padding: 8px;
 }
 
-.design-info{ padding: 18px 20px 20px; }
+.play-btn{
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+}
+.play-btn:hover{ background: var(--gold); color: #241C2C; }
+
+.design-info{ padding: 10px 10px 12px; }
 .design-name{
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  margin: 0 0 14px;
+  margin: 0 0 8px;
+  line-height: 1.25;
+  min-height: 2.1em;
 }
 
 .try-btn{
   display: block;
   text-align: center;
-  padding: 14px;
-  border-radius: 12px;
+  padding: 9px 4px;
+  border-radius: 10px;
   background: linear-gradient(135deg, var(--gold), #d99a2b);
   color: #1A1420;
   text-decoration: none;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.98rem;
+  font-size: 0.72rem;
 }
 
 .article-link{
   display: block;
   text-align: center;
-  margin-top: 10px;
+  margin-top: 8px;
   color: var(--ink-dim);
   text-decoration: none;
-  font-size: 0.78rem;
+  font-size: 0.65rem;
 }
 .article-link:hover{ color: var(--coral); }
+
+.load-more-btn{
+  display: block;
+  margin: 24px auto 0;
+  padding: 13px 28px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.load-more-btn:hover{ border-color: var(--gold); color: var(--gold); }
 
 .error-state{ text-align: center; padding: 40px 0; }
 .error-state h1{ font-family: var(--font-display); font-size: 1.4rem; }
@@ -96,3 +136,31 @@
   text-decoration: none;
   font-size: 0.9rem;
 }
+
+/* ---------- fullscreen 9:16 preview modal ---------- */
+.preview-modal{
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,0.92);
+  display: flex; align-items: center; justify-content: center;
+}
+.preview-modal-video{
+  height: 100%;
+  max-height: 100vh;
+  aspect-ratio: 9 / 16;
+  max-width: 100vw;
+  object-fit: contain;
+  background: #000;
+}
+.preview-close{
+  position: absolute;
+  top: 18px; right: 18px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  z-index: 1000;
+}
+.preview-close:hover{ background: var(--gold); color: #241C2C; }
