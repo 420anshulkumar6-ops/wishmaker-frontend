@@ -19,13 +19,16 @@
     <a href="index.html" class="logo">WishMaker</a>
     <div class="nav-links">
       <a href="index.html">Home</a>
-      <a href="index.html#categoryDeck" class="primary">Create a Video Wish</a>
-      <a href="articles.html" class="accent">Blog</a>
+      <a href="index.html#categoryDeck">Create a Video Wish</a>
+      <a href="articles.html">Blog</a>
     </div>
   </div>
 </header>
 
 <main>
+  <div class="wrap" style="padding-top:20px;">
+    <a href="index.html" style="color:var(--ink-dim); text-decoration:none; font-size:0.85rem;">← Back to Home</a>
+  </div>
   <section class="hero wrap" style="padding-bottom:0;">
     <p class="eyebrow">Wishing Blog</p>
     <h1>Ideas &amp; <span class="accent">Inspiration</span></h1>
@@ -33,40 +36,8 @@
   </section>
 
   <section class="wrap" style="padding-top:30px;padding-bottom:60px;">
-    <div class="blog-grid">
-      <a href="#" class="blog-card">
-        <span class="blog-emoji">🎬</span>
-        <span>
-          <span class="blog-title">How to Make a WhatsApp Status Video Wish in 30 Seconds</span>
-          <span class="blog-desc">A simple step-by-step guide to creating a personalised video wish with your photo and music, and sharing it on WhatsApp Status so everyone sees it.</span>
-          <span class="blog-meta">4 min read</span>
-        </span>
-      </a>
-      <a href="#" class="blog-card">
-        <span class="blog-emoji">🪢</span>
-        <span>
-          <span class="blog-title">15 Heartfelt Raksha Bandhan Wish Ideas for Your Brother or Sister</span>
-          <span class="blog-desc">Stuck on what to write this Rakhi? Here are warm, funny and emotional Raksha Bandhan wish ideas you can use in your video wish, message or WhatsApp Status.</span>
-          <span class="blog-meta">5 min read</span>
-        </span>
-      </a>
-      <a href="#" class="blog-card">
-        <span class="blog-emoji">🎂</span>
-        <span>
-          <span class="blog-title">How to Write a Birthday Wish They'll Actually Remember</span>
-          <span class="blog-desc">Move beyond "Happy Birthday, have a great year". Practical tips and ready-to-use lines for birthday wishes that feel personal — plus how to turn one into a video wish.</span>
-          <span class="blog-meta">4 min read</span>
-        </span>
-      </a>
-      <a href="#" class="blog-card">
-        <span class="blog-emoji">🪔</span>
-        <span>
-          <span class="blog-title">Diwali Wishes and Message Ideas for Family, Friends and WhatsApp</span>
-          <span class="blog-desc">A collection of warm Diwali wishes — traditional, modern and short Status-ready lines — plus tips for sending a festival greeting that stands out this year.</span>
-          <span class="blog-meta">4 min read</span>
-        </span>
-      </a>
-    </div>
+    <div class="blog-grid" id="blogDeck"></div>
+    <div class="pagination" id="pagination"></div>
   </section>
 </main>
 
@@ -81,6 +52,66 @@
   <p class="footer-copy">© 2026 WishMaker. All rights reserved.</p>
 </footer>
 
+<script src="js/articles-data.js"></script>
+<script>
+  // POSTS_PER_PAGE controls how many show per page (10 → 3 pages total).
+  const POSTS_PER_PAGE = 10;
+  const articles = window.ARTICLES;
+
+  const totalPages = Math.ceil(articles.length / POSTS_PER_PAGE);
+  const deck = document.getElementById("blogDeck");
+  const pagination = document.getElementById("pagination");
+
+  function renderPage(page) {
+    deck.innerHTML = "";
+    const start = (page - 1) * POSTS_PER_PAGE;
+    const pageItems = articles.slice(start, start + POSTS_PER_PAGE);
+
+    pageItems.forEach(a => {
+      const el = document.createElement("a");
+      el.href = `article.html?id=${a.id}`;
+      el.className = "blog-card";
+      el.innerHTML = `
+        <span class="blog-emoji">${a.emoji}</span>
+        <span>
+          <span class="blog-title">${a.title}</span>
+          <span class="blog-desc">${a.desc}</span>
+          <span class="blog-meta">${a.time}</span>
+        </span>
+      `;
+      deck.appendChild(el);
+    });
+
+    renderPagination(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function renderPagination(page) {
+    pagination.innerHTML = "";
+
+    const prevBtn = document.createElement("button");
+    prevBtn.textContent = "← Prev";
+    prevBtn.disabled = page === 1;
+    prevBtn.addEventListener("click", () => renderPage(page - 1));
+    pagination.appendChild(prevBtn);
+
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i;
+      btn.className = "page-num" + (i === page ? " active" : "");
+      btn.addEventListener("click", () => renderPage(i));
+      pagination.appendChild(btn);
+    }
+
+    const nextBtn = document.createElement("button");
+    nextBtn.textContent = "Next →";
+    nextBtn.disabled = page === totalPages;
+    nextBtn.addEventListener("click", () => renderPage(page + 1));
+    pagination.appendChild(nextBtn);
+  }
+
+  renderPage(1);
+</script>
+
 </body>
 </html>
-
