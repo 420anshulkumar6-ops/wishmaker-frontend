@@ -212,6 +212,152 @@ a minute.`
     ]
   }
 
+  ,independence: {
+    label: "Independence Day",
+    icon: "🇮🇳",
+    tagline: "Patriotic pride for the nation.",
+
+    designs: [
+      {
+        id: "independence-1",
+        name: "Tiranga Salute",
+        backgroundVideo: "assets/videos/bg_independence1.mp4", // ⬅️ ADD THIS FILE
+        previewVideo: "assets/previews/preview_independence1.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        // ⚠️ placeholder position, copied from birthday — re-tune this in
+        // dev-tools/position-tester-live.html once bg_independence1.mp4 is added
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "24px" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Vande Mataram",     file: "music/independence-1.mp3" }, // ⬅️ ADD
+          { id: "m2", name: "Mera Rang De Basanti", file: "music/independence-2.mp3" }  // ⬅️ ADD
+        ],
+
+        article: {
+          title: "How to make an Independence Day video wish with the Tiranga Salute design",
+          body: `This design pairs a tricolour-themed background with your photo and name — a
+proud way to greet family, friends and colleagues on the 15th of August. Add a clear photo,
+type the name you're wishing, and pick a patriotic track — your video is ready to share on
+WhatsApp Status in under a minute.`
+        }
+      }
+    ]
+  }
+
+  ,holi: {
+    label: "Holi Wish",
+    icon: "🎨",
+    tagline: "Colours, joy and gulaal.",
+
+    designs: [
+      {
+        id: "holi-1",
+        name: "Rang Barse",
+        backgroundVideo: "assets/videos/bg_holi1.mp4", // ⬅️ ADD THIS FILE
+        previewVideo: "assets/previews/preview_holi1.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        // ⚠️ placeholder position, copied from birthday — re-tune this in
+        // dev-tools/position-tester-live.html once bg_holi1.mp4 is added
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Rang Barse",     file: "music/holi-1.mp3" }, // ⬅️ ADD
+          { id: "m2", name: "Holi Aayi Re",   file: "music/holi-2.mp3" }  // ⬅️ ADD
+        ],
+
+        article: {
+          title: "How to make a Holi video wish with the Rang Barse design",
+          body: `This design pairs a splash-of-colour background with your photo and name — a
+fun way to wish everyone a happy Holi. Add a bright photo, type the name you're greeting, and
+pick a festive track — your video renders in under a minute, ready for WhatsApp Status.`
+        }
+      }
+    ]
+  }
+
+  ,newyear: {
+    label: "New Year Wish",
+    icon: "🎉",
+    tagline: "Fresh starts and midnight cheer.",
+
+    designs: [
+      {
+        id: "newyear-1",
+        name: "Countdown to Midnight",
+        backgroundVideo: "assets/videos/bg_newyear1.mp4", // ⬅️ ADD THIS FILE
+        previewVideo: "assets/previews/preview_newyear1.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        // ⚠️ placeholder position, copied from birthday — re-tune this in
+        // dev-tools/position-tester-live.html once bg_newyear1.mp4 is added
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "24px" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Auld Lang Syne (Instrumental)", file: "music/newyear-1.mp3" }, // ⬅️ ADD
+          { id: "m2", name: "Party Countdown",                file: "music/newyear-2.mp3" }  // ⬅️ ADD
+        ],
+
+        article: {
+          title: "How to make a New Year video wish with the Countdown to Midnight design",
+          body: `This design pairs a fireworks-and-confetti background with your photo and name —
+perfect for ringing in the New Year with family and friends. Add a favourite photo, type the
+name you're greeting, and pick a celebratory track — ready to share on WhatsApp Status in under
+a minute.`
+        }
+      }
+    ]
+  }
+
+  ,wedding: {
+    label: "Wedding Wish",
+    icon: "💐",
+    tagline: "Cheers to the new couple.",
+
+    designs: [
+      {
+        id: "wedding-1",
+        name: "Just Married",
+        backgroundVideo: "assets/videos/bg_wedding1.mp4", // ⬅️ ADD THIS FILE
+        previewVideo: "assets/previews/preview_wedding1.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        // ⚠️ placeholder position, copied from birthday — re-tune this in
+        // dev-tools/position-tester-live.html once bg_wedding1.mp4 is added
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Shubh Vivah",   file: "music/wedding-1.mp3" }, // ⬅️ ADD
+          { id: "m2", name: "Mangalam",      file: "music/wedding-2.mp3" }  // ⬅️ ADD
+        ],
+
+        article: {
+          title: "How to make a wedding video wish with the Just Married design",
+          body: `This design pairs a floral, celebratory background with a couple photo and their
+names — a lovely way to wish a newly married couple. Add a clear photo, type both names, and
+pick a joyful track — your video is ready to share in under a minute.`
+        }
+      }
+    ]
+  }
+
 };
 
 export { categorySettings };
