@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — WishMaker</title>
+<meta name="description" content="Questions, feedback or content removal requests? Contact the WishMaker team — we usually reply within 24–48 hours.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="index.html" class="logo">WishMaker</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#categoryDeck">Create a Video Wish</a>
+      <a href="articles.html">Blog</a>
+    </div>
+  </div>
+</header>
+
+<main class="page-main wrap">
+  <a href="index.html" class="back-link">← Back to Home</a>
+
+  <h1 class="page-title">Contact Us</h1>
+  <p class="page-lead">
+    Have a question, suggestion, or want a wish removed? Send us a message —
+    we usually reply within 24–48 hours.
+  </p>
+
+  <div class="info-grid">
+    <div class="info-tile">
+      <div class="tile-emoji">📧</div>
+      <p class="tile-label">Email</p>
+      <p class="tile-value">support@wishmaker.app</p>
+      <!-- ⬅️ CHANGE this to your real support email -->
+    </div>
+    <div class="info-tile">
+      <div class="tile-emoji">⏱️</div>
+      <p class="tile-label">Response Time</p>
+      <p class="tile-value">Within 24–48 hours</p>
+    </div>
+  </div>
+
+  <form class="info-card contact-form" id="contactForm">
+    <div>
+      <label for="cName">Your Name</label>
+      <input id="cName" type="text" placeholder="e.g. Rahul">
+    </div>
+    <div>
+      <label for="cEmail">Email Address</label>
+      <input id="cEmail" type="email" placeholder="you@example.com">
+    </div>
+    <div>
+      <label for="cMessage">Message</label>
+      <textarea id="cMessage" rows="4" placeholder="How can we help?"></textarea>
+    </div>
+    <button type="submit">Send Message</button>
+  </form>
+</main>
+
+<footer class="wrap">
+  <nav class="footer-nav">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="disclaimer.html">Disclaimer</a>
+  </nav>
+  <p class="footer-copy">© 2026 WishMaker. All rights reserved.</p>
+</footer>
+
+<script>
+  // No backend needed — this opens the visitor's email app with the
+  // message pre-filled. Change the address below to your real inbox.
+  const SUPPORT_EMAIL = "support@wishmaker.app"; // ⬅️ CHANGE THIS
+
+  document.getElementById("contactForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("cName").value.trim();
+    const email = document.getElementById("cEmail").value.trim();
+    const message = document.getElementById("cMessage").value.trim();
+
+    if (!name || !email || !message) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    const subject = encodeURIComponent(`WishMaker Contact — ${name}`);
+    const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+    window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
+  });
+</script>
+
+</body>
+</html>
