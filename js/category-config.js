@@ -84,20 +84,326 @@ it directly as a video file.`
         }
       }
 
-      // Next design in this same category (example — not active yet):
-      // {
-      //   id: "birthday-2",
-      //   name: "Cake & Candles",
-      //   backgroundVideo: "assets/videos/bg_birthday2.mp4",
-      //   previewVideo: "assets/previews/preview_birthday2.mp4",
-      //   videoDurationSeconds: 18,
-      //   sourceClipSeconds: 0,
-      //   fields: { photo: true, name: true, quote: false },
-      //   photoPosition: { top: "..%", left: "..%", width: "..%", borderRadius: "50%" },
-      //   namePosition: { top: "..%" },
-      //   music: [ ... ],
-      //   article: { title: "...", body: "..." }
-      // }
+
+      ,{
+        id: "birthday-2",
+        name: "Cake & Candles",
+        // ⚠️ reusing birthday-1's background video for now — replace with a
+        // unique bg_birthday2.mp4 later if you want a different animated background
+        backgroundVideo: "assets/videos/bg_birthday1.mp4",
+        previewVideo: "assets/previews/preview_birthday2.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Happy Chimes",     file: "music/birthday-1.mp3" },
+          { id: "m2", name: "Party Bells",      file: "music/birthday-2.mp3" },
+          { id: "m3", name: "Warm Wishes",      file: "music/birthday-3.mp3" },
+          { id: "m4", name: "Soft Celebration", file: "music/birthday-4.mp3" }
+        ],
+
+        article: {
+          title: "How to make a birthday video wish with the Cake & Candles theme",
+          body: `This theme pairs a birthday-themed background with your photo and name —
+add a clear photo, type the name you're wishing, and pick one of the background tracks.
+Your video renders in under a minute, ready to share on WhatsApp Status.`
+        }
+      }
+      ,{
+        id: "birthday-3",
+        name: "Golden Birthday Glow",
+        // ⚠️ reusing birthday-1's background video for now — replace with a
+        // unique bg_birthday3.mp4 later if you want a different animated background
+        backgroundVideo: "assets/videos/bg_birthday1.mp4",
+        previewVideo: "assets/previews/preview_birthday3.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Happy Chimes",     file: "music/birthday-1.mp3" },
+          { id: "m2", name: "Party Bells",      file: "music/birthday-2.mp3" },
+          { id: "m3", name: "Warm Wishes",      file: "music/birthday-3.mp3" },
+          { id: "m4", name: "Soft Celebration", file: "music/birthday-4.mp3" }
+        ],
+
+        article: {
+          title: "How to make a birthday video wish with the Golden Birthday Glow theme",
+          body: `This theme pairs a birthday-themed background with your photo and name —
+add a clear photo, type the name you're wishing, and pick one of the background tracks.
+Your video renders in under a minute, ready to share on WhatsApp Status.`
+        }
+      }
+      ,{
+        id: "birthday-4",
+        name: "Rainbow Balloon Pop",
+        // ⚠️ reusing birthday-1's background video for now — replace with a
+        // unique bg_birthday4.mp4 later if you want a different animated background
+        backgroundVideo: "assets/videos/bg_birthday1.mp4",
+        previewVideo: "assets/previews/preview_birthday4.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Happy Chimes",     file: "music/birthday-1.mp3" },
+          { id: "m2", name: "Party Bells",      file: "music/birthday-2.mp3" },
+          { id: "m3", name: "Warm Wishes",      file: "music/birthday-3.mp3" },
+          { id: "m4", name: "Soft Celebration", file: "music/birthday-4.mp3" }
+        ],
+
+        article: {
+          title: "How to make a birthday video wish with the Rainbow Balloon Pop theme",
+          body: `This theme pairs a birthday-themed background with your photo and name —
+add a clear photo, type the name you're wishing, and pick one of the background tracks.
+Your video renders in under a minute, ready to share on WhatsApp Status.`
+        }
+      }
+      ,{
+        id: "birthday-5",
+        name: "Starlit Birthday Wish",
+        // ⚠️ reusing birthday-1's background video for now — replace with a
+        // unique bg_birthday5.mp4 later if you want a different animated background
+        backgroundVideo: "assets/videos/bg_birthday1.mp4",
+        previewVideo: "assets/previews/preview_birthday5.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Happy Chimes",     file: "music/birthday-1.mp3" },
+          { id: "m2", name: "Party Bells",      file: "music/birthday-2.mp3" },
+          { id: "m3", name: "Warm Wishes",      file: "music/birthday-3.mp3" },
+          { id: "m4", name: "Soft Celebration", file: "music/birthday-4.mp3" }
+        ],
+
+        article: {
+          title: "How to make a birthday video wish with the Starlit Birthday Wish theme",
+          body: `This theme pairs a birthday-themed background with your photo and name —
+add a clear photo, type the name you're wishing, and pick one of the background tracks.
+Your video renders in under a minute, ready to share on WhatsApp Status.`
+        }
+      }
+      ,{
+        id: "birthday-6",
+        name: "Sparkle & Cake",
+        // ⚠️ reusing birthday-1's background video for now — replace with a
+        // unique bg_birthday6.mp4 later if you want a different animated background
+        backgroundVideo: "assets/videos/bg_birthday1.mp4",
+        previewVideo: "assets/previews/preview_birthday6.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Happy Chimes",     file: "music/birthday-1.mp3" },
+          { id: "m2", name: "Party Bells",      file: "music/birthday-2.mp3" },
+          { id: "m3", name: "Warm Wishes",      file: "music/birthday-3.mp3" },
+          { id: "m4", name: "Soft Celebration", file: "music/birthday-4.mp3" }
+        ],
+
+        article: {
+          title: "How to make a birthday video wish with the Sparkle & Cake theme",
+          body: `This theme pairs a birthday-themed background with your photo and name —
+add a clear photo, type the name you're wishing, and pick one of the background tracks.
+Your video renders in under a minute, ready to share on WhatsApp Status.`
+        }
+      }
+      ,{
+        id: "birthday-7",
+        name: "Neon Party Nights",
+        // ⚠️ reusing birthday-1's background video for now — replace with a
+        // unique bg_birthday7.mp4 later if you want a different animated background
+        backgroundVideo: "assets/videos/bg_birthday1.mp4",
+        previewVideo: "assets/previews/preview_birthday7.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Happy Chimes",     file: "music/birthday-1.mp3" },
+          { id: "m2", name: "Party Bells",      file: "music/birthday-2.mp3" },
+          { id: "m3", name: "Warm Wishes",      file: "music/birthday-3.mp3" },
+          { id: "m4", name: "Soft Celebration", file: "music/birthday-4.mp3" }
+        ],
+
+        article: {
+          title: "How to make a birthday video wish with the Neon Party Nights theme",
+          body: `This theme pairs a birthday-themed background with your photo and name —
+add a clear photo, type the name you're wishing, and pick one of the background tracks.
+Your video renders in under a minute, ready to share on WhatsApp Status.`
+        }
+      }
+      ,{
+        id: "birthday-8",
+        name: "Vintage Birthday Frame",
+        // ⚠️ reusing birthday-1's background video for now — replace with a
+        // unique bg_birthday8.mp4 later if you want a different animated background
+        backgroundVideo: "assets/videos/bg_birthday1.mp4",
+        previewVideo: "assets/previews/preview_birthday8.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Happy Chimes",     file: "music/birthday-1.mp3" },
+          { id: "m2", name: "Party Bells",      file: "music/birthday-2.mp3" },
+          { id: "m3", name: "Warm Wishes",      file: "music/birthday-3.mp3" },
+          { id: "m4", name: "Soft Celebration", file: "music/birthday-4.mp3" }
+        ],
+
+        article: {
+          title: "How to make a birthday video wish with the Vintage Birthday Frame theme",
+          body: `This theme pairs a birthday-themed background with your photo and name —
+add a clear photo, type the name you're wishing, and pick one of the background tracks.
+Your video renders in under a minute, ready to share on WhatsApp Status.`
+        }
+      }
+      ,{
+        id: "birthday-9",
+        name: "Floral Birthday Bloom",
+        // ⚠️ reusing birthday-1's background video for now — replace with a
+        // unique bg_birthday9.mp4 later if you want a different animated background
+        backgroundVideo: "assets/videos/bg_birthday1.mp4",
+        previewVideo: "assets/previews/preview_birthday9.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Happy Chimes",     file: "music/birthday-1.mp3" },
+          { id: "m2", name: "Party Bells",      file: "music/birthday-2.mp3" },
+          { id: "m3", name: "Warm Wishes",      file: "music/birthday-3.mp3" },
+          { id: "m4", name: "Soft Celebration", file: "music/birthday-4.mp3" }
+        ],
+
+        article: {
+          title: "How to make a birthday video wish with the Floral Birthday Bloom theme",
+          body: `This theme pairs a birthday-themed background with your photo and name —
+add a clear photo, type the name you're wishing, and pick one of the background tracks.
+Your video renders in under a minute, ready to share on WhatsApp Status.`
+        }
+      }
+      ,{
+        id: "birthday-10",
+        name: "Cosmic Birthday Countdown",
+        // ⚠️ reusing birthday-1's background video for now — replace with a
+        // unique bg_birthday10.mp4 later if you want a different animated background
+        backgroundVideo: "assets/videos/bg_birthday1.mp4",
+        previewVideo: "assets/previews/preview_birthday10.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Happy Chimes",     file: "music/birthday-1.mp3" },
+          { id: "m2", name: "Party Bells",      file: "music/birthday-2.mp3" },
+          { id: "m3", name: "Warm Wishes",      file: "music/birthday-3.mp3" },
+          { id: "m4", name: "Soft Celebration", file: "music/birthday-4.mp3" }
+        ],
+
+        article: {
+          title: "How to make a birthday video wish with the Cosmic Birthday Countdown theme",
+          body: `This theme pairs a birthday-themed background with your photo and name —
+add a clear photo, type the name you're wishing, and pick one of the background tracks.
+Your video renders in under a minute, ready to share on WhatsApp Status.`
+        }
+      }
+      ,{
+        id: "birthday-11",
+        name: "Retro Birthday Disco",
+        // ⚠️ reusing birthday-1's background video for now — replace with a
+        // unique bg_birthday11.mp4 later if you want a different animated background
+        backgroundVideo: "assets/videos/bg_birthday1.mp4",
+        previewVideo: "assets/previews/preview_birthday11.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Happy Chimes",     file: "music/birthday-1.mp3" },
+          { id: "m2", name: "Party Bells",      file: "music/birthday-2.mp3" },
+          { id: "m3", name: "Warm Wishes",      file: "music/birthday-3.mp3" },
+          { id: "m4", name: "Soft Celebration", file: "music/birthday-4.mp3" }
+        ],
+
+        article: {
+          title: "How to make a birthday video wish with the Retro Birthday Disco theme",
+          body: `This theme pairs a birthday-themed background with your photo and name —
+add a clear photo, type the name you're wishing, and pick one of the background tracks.
+Your video renders in under a minute, ready to share on WhatsApp Status.`
+        }
+      }
+      ,{
+        id: "birthday-12",
+        name: "Pastel Balloon Dreams",
+        // ⚠️ reusing birthday-1's background video for now — replace with a
+        // unique bg_birthday12.mp4 later if you want a different animated background
+        backgroundVideo: "assets/videos/bg_birthday1.mp4",
+        previewVideo: "assets/previews/preview_birthday12.mp4", // ⬅️ ADD THIS FILE
+        videoDurationSeconds: 18,
+        sourceClipSeconds: 4.7,
+
+        fields: { photo: true, name: true, quote: false },
+
+        photoPosition: { top: "24.5%", left: "50%", width: "62.5%", borderRadius: "50%" },
+        namePosition: { top: "58%" },
+
+        music: [
+          { id: "m1", name: "Happy Chimes",     file: "music/birthday-1.mp3" },
+          { id: "m2", name: "Party Bells",      file: "music/birthday-2.mp3" },
+          { id: "m3", name: "Warm Wishes",      file: "music/birthday-3.mp3" },
+          { id: "m4", name: "Soft Celebration", file: "music/birthday-4.mp3" }
+        ],
+
+        article: {
+          title: "How to make a birthday video wish with the Pastel Balloon Dreams theme",
+          body: `This theme pairs a birthday-themed background with your photo and name —
+add a clear photo, type the name you're wishing, and pick one of the background tracks.
+Your video renders in under a minute, ready to share on WhatsApp Status.`
+        }
+      }
     ]
   }
 
