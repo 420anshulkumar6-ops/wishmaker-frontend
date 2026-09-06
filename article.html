@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">Article — WishMaker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .article-body{ color: var(--ink-dim); font-size: 0.95rem; line-height: 1.7; }
+  .article-body p{ margin: 0 0 16px; }
+  .article-body code{ background: rgba(0,0,0,0.25); padding: 2px 6px; border-radius: 6px; font-size: 0.85em; }
+  .article-meta{ display:flex; align-items:center; gap:10px; margin: 0 0 6px; }
+  .article-emoji{ font-size: 2rem; }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="index.html" class="logo">WishMaker</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#categoryDeck">Create a Video Wish</a>
+      <a href="articles.html">Blog</a>
+    </div>
+  </div>
+</header>
+
+<main class="page-main wrap" id="articleRoot">
+  <a href="articles.html" class="back-link">← Back to Blog</a>
+  <p>Loading…</p>
+</main>
+
+<footer class="wrap">
+  <nav class="footer-nav">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="disclaimer.html">Disclaimer</a>
+  </nav>
+  <p class="footer-copy">© 2026 WishMaker. All rights reserved.</p>
+</footer>
+
+<script src="js/articles-data.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const id = Number(params.get("id"));
+  const article = window.ARTICLES.find(a => a.id === id);
+  const root = document.getElementById("articleRoot");
+
+  if (!article) {
+    root.innerHTML = `
+      <a href="articles.html" class="back-link">← Back to Blog</a>
+      <h1 class="page-title">Article not found</h1>
+      <p class="page-lead">This article may have been removed or the link is incorrect.</p>
+    `;
+  } else {
+    document.getElementById("pageTitle").textContent = article.title + " — WishMaker";
+    root.innerHTML = `
+      <a href="articles.html" class="back-link">← Back to Blog</a>
+      <div class="article-meta" style="margin-top:22px;">
+        <span class="article-emoji">${article.emoji}</span>
+        <span class="page-updated" style="margin:0;">${article.time}</span>
+      </div>
+      <h1 class="page-title" style="margin-top:8px;">${article.title}</h1>
+      <div class="article-body">${window.getArticleBody(article)}</div>
+      <div class="mid-cta">
+        <a href="index.html#categoryDeck" class="cta-btn">✨ Create a Wish</a>
+      </div>
+    `;
+  }
+</script>
+
+</body>
+</html>
