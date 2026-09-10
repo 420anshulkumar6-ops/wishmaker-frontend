@@ -143,6 +143,7 @@
   background: rgba(0,0,0,0.92);
   display: flex; align-items: center; justify-content: center;
 }
+.preview-modal[hidden]{ display: none; }
 .preview-modal-video{
   height: 100%;
   max-height: 100vh;
