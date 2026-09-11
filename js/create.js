@@ -45,6 +45,8 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
     form: document.getElementById("wishForm"),
     renderState: document.getElementById("renderState"),
     renderMessage: document.getElementById("renderMessage"),
+    previewPhoto: document.getElementById("previewPhoto"),
+    previewName: document.getElementById("previewName"),
     errorState: document.getElementById("errorState")
   };
 
@@ -250,29 +252,6 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
 
   els.nameInput?.addEventListener("input", checkFormReady);
 
-  // ---- rotating loading messages while the backend renders ----
-  let loadingInterval = null;
-  function startLoadingMessages() {
-    const stages = [
-      { at: 0,  text: "Waking things up… ✨" },
-      { at: 8,  text: "Almost there, hang tight…" },
-      { at: 18, text: "Setting the scene…" },
-      { at: 30, text: "Still working — free hosting can be slow to start, thanks for waiting…" },
-      { at: 45, text: "Lighting the candles… 🕯️" },
-      { at: 60, text: "Nearly done, this is the last stretch…" }
-    ];
-    let elapsed = 0;
-    loadingInterval = setInterval(() => {
-      elapsed += 1;
-      const stage = [...stages].reverse().find(s => elapsed >= s.at);
-      if (stage) els.renderMessage.textContent = stage.text;
-    }, 1000);
-  }
-  function stopLoadingMessages() {
-    if (loadingInterval) clearInterval(loadingInterval);
-    loadingInterval = null;
-  }
-
   // ---- upload photo to ImgBB, returns the hosted image URL ----
   async function uploadToImgBB(file) {
     const formData = new FormData();
@@ -298,15 +277,23 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
       return;
     }
 
+    // Show the same cropped circle the user just set up, on the preview card,
+    // so the "filling" loading state actually looks like their video.
+    els.previewPhoto.src = els.cropImg.src;
+    if (fields.name && els.nameInput.value.trim()) {
+      els.previewName.textContent = els.nameInput.value.trim();
+      els.previewName.hidden = false;
+    } else {
+      els.previewName.hidden = true;
+    }
+
     els.form.hidden = true;
     els.renderState.hidden = false;
-    els.renderMessage.textContent = "Uploading photo…";
+    els.renderMessage.textContent = "Your video is being created, please wait…";
 
     try {
       const croppedFile = await getCroppedPhotoFile();
       const photoUrl = await uploadToImgBB(croppedFile);
-
-      startLoadingMessages();
 
       const renderResponse = await fetch(VIDEO_RENDER_ENDPOINT, {
         method: "POST",
@@ -323,8 +310,6 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
 
       if (!renderResponse.ok) throw new Error("Video rendering failed");
       const { videoUrl } = await renderResponse.json();
-      stopLoadingMessages();
-      els.renderMessage.textContent = "Almost ready…";
 
       const wishId = await saveWish({
         theme: themeKey,
@@ -339,7 +324,6 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
       window.location.href = `wish.html?id=${wishId}`;
 
     } catch (err) {
-      stopLoadingMessages();
       els.form.hidden = false;
       els.renderState.hidden = true;
       els.formError.textContent = "Something went wrong — please try again.";
