@@ -241,7 +241,6 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
   position: fixed;
   inset: 0;
   z-index: 1000;
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -251,6 +250,10 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
   text-align: center;
   color: var(--ink-dim);
 }
+/* only actually shows once JS clears the `hidden` attribute on submit —
+   this must win over the display:flex above, or it shows on page load */
+.render-overlay[hidden]{ display: none; }
+.render-overlay:not([hidden]){ display: flex; }
 
 .preview-card{
   position: relative;
