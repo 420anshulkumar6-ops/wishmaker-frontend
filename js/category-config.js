@@ -41,6 +41,7 @@ const categorySettings = {
         name: "Balloons & Confetti",
         backgroundVideo: "assets/videos/bg_birthday1.mp4",
         previewVideo: "assets/previews/preview_birthday1.mp4", // short looping sample shown on the category page — you'll add this file
+        loadingBackground: "assets/loading/birthday-1.jpg", // static still of this design, shown behind the photo while the video renders
         videoDurationSeconds: 18,
         sourceClipSeconds: 4.7,
 
