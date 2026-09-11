@@ -259,11 +259,28 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
   position: relative;
   width: min(320px, 82vw);
   aspect-ratio: 9 / 16;
-  max-height: 62vh;
+  max-height: 74vh;
   border-radius: var(--radius);
   overflow: hidden;
   background: linear-gradient(180deg, #2a2035, #1A1420 65%);
   border: 1px solid var(--line);
+}
+
+/* the actual design still (balloons, banner, cake) — same image style as
+   the final video, so the loading state looks like "the video already
+   exists, it's just paused" rather than a generic placeholder */
+.preview-bg{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* fallback layout used only if a design has no loadingBackground image yet.
+   JS adds .no-bg to the card in that case (avoids relying on :has()). */
+.preview-card.no-bg{
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -272,13 +289,22 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
   padding: 20px;
 }
 
+/* photo + name are positioned with the same top/left/width percentages
+   as photoPosition/namePosition in category-config.js, set inline by JS,
+   so they land exactly where they'll sit in the finished video */
 .preview-photo-ring{
-  width: 34%;
+  position: absolute;
+  transform: translate(-50%, 0);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--gold);
   box-shadow: 0 0 0 6px rgba(232,179,78,0.12);
+}
+.preview-card.no-bg .preview-photo-ring{
+  position: relative;
+  transform: none;
+  width: 34%;
   flex-shrink: 0;
 }
 .preview-photo-ring img{
@@ -289,30 +315,44 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
 }
 
 .preview-name{
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.2rem;
   color: var(--ink);
   margin: 0;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+.preview-card.no-bg .preview-name{
+  position: relative;
+  left: auto;
+  transform: none;
+  color: var(--ink);
+  text-shadow: none;
 }
 
 /* the "tank filling with water" reveal: a translucent gold sheet that
-   shrinks from the bottom up, covering less of the card over time */
+   shrinks from the bottom up, covering less of the card over time. Kept
+   fairly light so the design/photo underneath stays visible throughout —
+   this is a shimmer on top of the real preview, not a cover-up. */
 .fill-overlay{
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   height: 100%;
-  background: linear-gradient(180deg, rgba(232,179,78,0.0), rgba(232,179,78,0.22) 40%, rgba(232,179,78,0.5));
-  border-top: 2px solid rgba(232,179,78,0.6);
+  background: linear-gradient(180deg, rgba(232,179,78,0.0), rgba(232,179,78,0.12) 45%, rgba(232,179,78,0.28));
+  border-top: 1px solid rgba(232,179,78,0.55);
   animation: fillRise 14s ease-in-out infinite;
   pointer-events: none;
 }
 @keyframes fillRise{
-  0%   { height: 100%; }
-  85%  { height: 6%; }
-  100% { height: 6%; }
+  0%   { height: 55%; }
+  50%  { height: 10%; }
+  85%  { height: 55%; }
+  100% { height: 55%; }
 }
 
 #renderMessage{
@@ -321,6 +361,6 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
 }
 
 @media (prefers-reduced-motion: reduce){
-  .fill-overlay{ animation: none; height: 40%; }
+  .fill-overlay{ animation: none; height: 25%; }
   .btn-primary:not(:disabled):hover{ transform: none; }
 }
