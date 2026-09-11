@@ -27,9 +27,7 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
     title: document.getElementById("themeTitle"),
     sub: document.getElementById("themeSub"),
     photoField: document.getElementById("photoField"),
-    dropzone: document.getElementById("dropzone"),
-    dzIcon: document.getElementById("dzIcon"),
-    dzText: document.getElementById("dzText"),
+    dzPlaceholder: document.getElementById("dzPlaceholder"),
     photoInput: document.getElementById("photoInput"),
     cropEditor: document.getElementById("cropEditor"),
     cropStage: document.getElementById("cropStage"),
@@ -135,7 +133,12 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
     imgState.y = Math.min(maxY, Math.max(-maxY, imgState.y));
   }
 
-  els.dropzone.addEventListener("click", () => els.photoInput.click());
+  // Tapping the circle (in its empty state) opens the file picker.
+  // Once a photo is loaded, taps on the circle are for dragging instead —
+  // "Choose a different photo" below takes over that role.
+  els.cropStage.addEventListener("click", () => {
+    if (!selectedFile) els.photoInput.click();
+  });
   els.changePhotoBtn.addEventListener("click", () => els.photoInput.click());
 
   els.photoInput.addEventListener("change", () => {
@@ -170,7 +173,9 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
         els.cropZoom.value = 100;
         applyImgTransform();
 
-        els.dropzone.hidden = true;
+        els.dzPlaceholder.hidden = true;
+        els.cropImg.hidden = false;
+        els.cropStage.classList.add("has-photo");
         els.cropEditor.hidden = false;
         checkFormReady();
       };
@@ -179,8 +184,9 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
     reader.readAsDataURL(file);
   });
 
-  // ---- drag to reposition ----
+  // ---- drag to reposition (only once a photo is loaded) ----
   els.cropStage.addEventListener("pointerdown", (e) => {
+    if (!selectedFile) return;
     dragging = true;
     dragStart = { x: e.clientX, y: e.clientY, imgX: imgState.x, imgY: imgState.y };
     els.cropStage.setPointerCapture(e.pointerId);
