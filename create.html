@@ -92,21 +92,8 @@
       <span id="submitLabel">Create the video</span>
     </button>
     <p class="field-hint" id="formError" role="alert"></p>
-    <p class="field-hint">Takes up to a minute to prepare — worth the wait, promise.</p>
 
   </form>
-
-  <!-- Rendering state -->
-  <div class="render-state" id="renderState" hidden>
-    <div class="preview-card" id="previewCard">
-      <div class="preview-photo-ring">
-        <img id="previewPhoto" alt="">
-      </div>
-      <p class="preview-name" id="previewName" hidden></p>
-      <div class="fill-overlay" id="fillOverlay"></div>
-    </div>
-    <p id="renderMessage">Lighting the candles… ✨</p>
-  </div>
 
   <!-- Error state: bad/missing theme+design combination in the URL -->
   <div class="error-state" id="errorState" hidden>
@@ -116,6 +103,19 @@
   </div>
 
 </main>
+
+<!-- Rendering state: fullscreen overlay shown while the backend renders,
+     sits outside <main> so it can cover the whole viewport. -->
+<div class="render-overlay" id="renderState" hidden>
+  <div class="preview-card" id="previewCard">
+    <div class="preview-photo-ring">
+      <img id="previewPhoto" alt="">
+    </div>
+    <p class="preview-name" id="previewName" hidden></p>
+    <div class="fill-overlay" id="fillOverlay"></div>
+  </div>
+  <p id="renderMessage">Your video is being created, please wait…</p>
+</div>
 
 <footer class="wrap">
   <nav class="footer-nav">

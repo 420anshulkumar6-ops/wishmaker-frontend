@@ -234,19 +234,29 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
   min-height: 1em;
 }
 
-/* render / loading state — shows the user's photo on a themed card with
-   a bottom-to-top "filling" reveal while the video renders in the background */
-.render-state{
-  padding: 40px 0 60px;
+/* render / loading state — fullscreen overlay shown while the backend
+   renders. Shows the user's photo on a themed card with a bottom-to-top
+   "filling" reveal so the wait feels like part of the experience. */
+.render-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 24px;
+  background: var(--bg);
   text-align: center;
   color: var(--ink-dim);
 }
 
 .preview-card{
   position: relative;
-  width: 260px;
+  width: min(320px, 82vw);
   aspect-ratio: 9 / 16;
-  margin: 0 auto 24px;
+  max-height: 62vh;
   border-radius: var(--radius);
   overflow: hidden;
   background: linear-gradient(180deg, #2a2035, #1A1420 65%);
@@ -260,8 +270,8 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
 }
 
 .preview-photo-ring{
-  width: 130px;
-  height: 130px;
+  width: 34%;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--gold);
@@ -278,7 +288,7 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
 .preview-name{
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: var(--ink);
   margin: 0;
 }
@@ -300,6 +310,11 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
   0%   { height: 100%; }
   85%  { height: 6%; }
   100% { height: 6%; }
+}
+
+#renderMessage{
+  font-size: 1rem;
+  max-width: 320px;
 }
 
 @media (prefers-reduced-motion: reduce){
