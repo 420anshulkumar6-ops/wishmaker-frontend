@@ -17,7 +17,12 @@
 
 <header class="topbar">
   <div class="wrap topbar-inner">
-    <a href="index.html" class="logo">Wish<em>Maker</em></a>
+    <a href="index.html" class="logo"><span class="logo-wish">Wish</span><span class="logo-maker">Maker</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#categoryDeck">Create a Video Wish</a>
+      <a href="articles.html">Blog</a>
+    </div>
   </div>
 </header>
 
@@ -35,28 +40,30 @@
     <div class="field" id="photoField">
       <label for="photoInput">Their photo</label>
 
-      <label class="dropzone" id="dropzone" for="photoInput">
-        <span class="dz-icon" id="dzIcon">📷</span>
-        <span class="dz-text" id="dzText">Tap to choose a photo</span>
-      </label>
       <input type="file" id="photoInput" name="photo" accept="image/*" hidden>
 
-      <!-- Crop UI: shown only after a photo is chosen. The circular mask
-           previews exactly what the final video will show. -->
-      <div class="crop-editor" id="cropEditor" hidden>
-        <div class="crop-stage" id="cropStage">
-          <img id="cropImg" alt="" draggable="false">
-          <div class="crop-mask"></div>
+      <!-- Single circular stage: starts as an empty tap-to-choose circle,
+           and once a photo is picked, the same circle becomes the drag/zoom
+           crop stage — no separate rectangle box, no layout jump. -->
+      <div class="crop-stage" id="cropStage">
+        <div class="dz-placeholder" id="dzPlaceholder">
+          <span class="dz-icon" id="dzIcon">📷</span>
+          <span class="dz-text" id="dzText">Tap to choose a photo</span>
         </div>
+        <img id="cropImg" alt="" draggable="false" hidden>
+        <div class="crop-mask"></div>
+      </div>
+
+      <!-- Zoom + change-photo controls: shown only after a photo is chosen -->
+      <div class="crop-editor" id="cropEditor" hidden>
         <label class="crop-zoom-row">
           <span>Zoom</span>
           <input type="range" id="cropZoom" min="100" max="300" value="100" step="1">
         </label>
-        <p class="field-hint">Drag the photo to reposition it. This circle is exactly what will show in the video.</p>
         <button type="button" class="btn-secondary-inline" id="changePhotoBtn">Choose a different photo</button>
       </div>
 
-      <p class="field-hint" id="uploadStatus">A close-up, well-lit photo works best. Shown in a circular frame.</p>
+      <p class="field-hint" id="uploadStatus">A close-up, well-lit photo works best. Tap the circle to choose one, then drag to reposition and use the zoom slider.</p>
     </div>
 
     <!-- Name field: shown/hidden per design via fields.name in category-config.js -->
@@ -112,7 +119,7 @@
     <a href="contact.html">Contact Us</a>
     <a href="disclaimer.html">Disclaimer</a>
   </nav>
-  <p class="footer-copy">WishMaker</p>
+  <p class="footer-copy">© 2026 WishMaker. All rights reserved.</p>
 </footer>
 
 <script type="module" src="js/category-config.js"></script>

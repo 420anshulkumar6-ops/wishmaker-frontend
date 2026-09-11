@@ -79,33 +79,9 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
 #nameInput::placeholder,
 #quoteInput::placeholder{ color: var(--ink-dim); }
 
-/* dropzone */
-.dropzone{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 160px;
-  border: 1.5px dashed var(--line);
-  border-radius: var(--radius);
-  background: var(--bg-soft);
-  cursor: pointer;
-  text-align: center;
-  padding: 20px;
-  transition: border-color 0.2s ease, background 0.2s ease;
-  position: relative;
-  overflow: hidden;
-}
-.dropzone:hover,
-.dropzone:focus-visible{ border-color: var(--gold); }
-
-.dz-icon{ font-size: 1.8rem; }
-.dz-text{ font-size: 0.9rem; color: var(--ink-dim); }
-
-/* crop editor — shown after a photo is chosen */
-.crop-editor{ margin-top: 14px; }
-
+/* photo circle — one element serves as both the empty dropzone and,
+   once a photo is chosen, the drag/zoom crop stage. No layout jump
+   between the two states, no separate rectangle box. */
 .crop-stage{
   position: relative;
   width: 240px;
@@ -113,12 +89,38 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
   margin: 0 auto;
   border-radius: 50%;
   overflow: hidden;
-  background: #000;
+  background: var(--bg-soft);
+  border: 1.5px dashed var(--line);
+  cursor: pointer;
+  touch-action: none;
+  transition: border-color 0.2s ease;
+}
+.crop-stage:hover,
+.crop-stage:focus-visible{ border-color: var(--gold); }
+
+/* once a photo is loaded, .crop-stage gets this class: solid border,
+   grab cursor for dragging, no hover-only affordance needed */
+.crop-stage.has-photo{
   border: 2px solid var(--line);
   cursor: grab;
-  touch-action: none;
+  background: #000;
 }
-.crop-stage:active{ cursor: grabbing; }
+.crop-stage.has-photo:active{ cursor: grabbing; }
+
+.dz-placeholder{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 20px;
+  pointer-events: none;
+}
+.dz-icon{ font-size: 1.8rem; }
+.dz-text{ font-size: 0.85rem; color: var(--ink-dim); }
 
 .crop-stage img{
   position: absolute;
@@ -140,12 +142,15 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
   pointer-events: none;
 }
 
+/* controls shown below the circle once a photo is chosen */
+.crop-editor{ margin-top: 14px; }
+
 .crop-zoom-row{
   display: flex;
   align-items: center;
   gap: 12px;
   max-width: 240px;
-  margin: 16px auto 0;
+  margin: 0 auto;
   font-size: 0.85rem;
   color: var(--ink-dim);
 }
