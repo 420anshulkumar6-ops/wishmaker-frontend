@@ -235,8 +235,9 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
 }
 
 /* render / loading state — fullscreen overlay shown while the backend
-   renders. Shows the user's photo on a themed card with a bottom-to-top
-   "filling" reveal so the wait feels like part of the experience. */
+   renders. One universal card used for every design — a glowing rotating
+   ring around the user's photo plus a shimmer bar below, so it reads as
+   "your video is being put together" without needing a per-design asset. */
 .render-overlay{
   position: fixed;
   inset: 0;
@@ -258,101 +259,87 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
 .preview-card{
   position: relative;
   width: min(320px, 82vw);
-  aspect-ratio: 9 / 16;
-  max-height: 74vh;
-  border-radius: var(--radius);
-  overflow: hidden;
-  background: linear-gradient(180deg, #2a2035, #1A1420 65%);
-  border: 1px solid var(--line);
-}
-
-/* the actual design still (balloons, banner, cake) — same image style as
-   the final video, so the loading state looks like "the video already
-   exists, it's just paused" rather than a generic placeholder */
-.preview-bg{
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* fallback layout used only if a design has no loadingBackground image yet.
-   JS adds .no-bg to the card in that case (avoids relying on :has()). */
-.preview-card.no-bg{
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  padding: 20px;
+  gap: 20px;
+  padding: 40px 28px;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #241c30, #1A1420 70%);
+  border: 1px solid var(--line);
 }
 
-/* photo + name are positioned with the same top/left/width percentages
-   as photoPosition/namePosition in category-config.js, set inline by JS,
-   so they land exactly where they'll sit in the finished video */
+/* photo sits inside a ring that has its own rotating conic-gradient glow,
+   like a "story ring" — reads as active progress, not a static frame */
 .preview-photo-ring{
-  position: absolute;
-  transform: translate(-50%, 0);
+  position: relative;
+  width: 40%;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
-  overflow: hidden;
-  border: 2px solid var(--gold);
-  box-shadow: 0 0 0 6px rgba(232,179,78,0.12);
-}
-.preview-card.no-bg .preview-photo-ring{
-  position: relative;
-  transform: none;
-  width: 34%;
   flex-shrink: 0;
+  padding: 4px;
+}
+.preview-photo-ring::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--gold), transparent 40%, var(--gold) 100%);
+  animation: ringSpin 2.2s linear infinite;
+}
+.preview-photo-ring::after{
+  /* soft glow behind the ring */
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,179,78,0.35), transparent 70%);
+  filter: blur(4px);
+  z-index: -1;
 }
 .preview-photo-ring img{
+  position: relative;
   width: 100%;
   height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
   object-fit: cover;
   display: block;
+  border: 3px solid var(--bg-soft);
 }
+@keyframes ringSpin{ to{ transform: rotate(360deg); } }
 
 .preview-name{
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0);
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.2rem;
   color: var(--ink);
   margin: 0;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
-}
-.preview-card.no-bg .preview-name{
-  position: relative;
-  left: auto;
-  transform: none;
-  color: var(--ink);
-  text-shadow: none;
 }
 
-/* the "tank filling with water" reveal: a translucent gold sheet that
-   shrinks from the bottom up, covering less of the card over time. Kept
-   fairly light so the design/photo underneath stays visible throughout —
-   this is a shimmer on top of the real preview, not a cover-up. */
-.fill-overlay{
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 100%;
-  background: linear-gradient(180deg, rgba(232,179,78,0.0), rgba(232,179,78,0.12) 45%, rgba(232,179,78,0.28));
-  border-top: 1px solid rgba(232,179,78,0.55);
-  animation: fillRise 14s ease-in-out infinite;
-  pointer-events: none;
+/* shimmer progress bar: a soft gold sweep moving left to right across a
+   thin track, like a media-loading skeleton */
+.shimmer-bar{
+  position: relative;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  overflow: hidden;
 }
-@keyframes fillRise{
-  0%   { height: 55%; }
-  50%  { height: 10%; }
-  85%  { height: 55%; }
-  100% { height: 55%; }
+.shimmer-sweep{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  animation: shimmerSweep 1.6s ease-in-out infinite;
+}
+@keyframes shimmerSweep{
+  0%   { left: -40%; }
+  100% { left: 100%; }
 }
 
 #renderMessage{
@@ -361,6 +348,8 @@ fieldset.field{ border: none; margin: 0; padding: 0; }
 }
 
 @media (prefers-reduced-motion: reduce){
-  .fill-overlay{ animation: none; height: 25%; }
+  .preview-photo-ring::before{ animation: none; }
+  .shimmer-sweep{ animation: none; left: 30%; }
   .btn-primary:not(:disabled):hover{ transform: none; }
 }
+
