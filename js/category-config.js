@@ -42,7 +42,7 @@ const categorySettings = {
         backgroundVideo: "assets/videos/bg_birthday1.mp4",
         previewVideo: "assets/previews/preview_birthday1.mp4", // short looping sample shown on the category page — you'll add this file
         videoDurationSeconds: 18,
-        sourceClipSeconds: 4.7,
+        sourceClipSeconds: 8,
 
         // ---- form fields: entirely independent per design ----
         fields: {
@@ -55,11 +55,11 @@ const categorySettings = {
         photoPosition: {
           top: "24.5%",
           left: "50%",
-          width: "62.5%",
+          width: "47.5%",
           borderRadius: "50%"
         },
         namePosition: {
-          top: "58%"
+          top: "52%"
         },
 
         music: [
