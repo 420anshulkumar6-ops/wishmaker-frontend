@@ -277,8 +277,9 @@ const VIDEO_RENDER_ENDPOINT = "https://wishmaker-fkqw.onrender.com/render";
       return;
     }
 
-    // Show the same cropped circle the user just set up, on the preview card,
-    // so the "filling" loading state actually looks like their video.
+    // Show the same cropped circle the user just set up, on the loading
+    // card, with a glowing ring animation — same card for every design,
+    // no per-design background image needed.
     els.previewPhoto.src = els.cropImg.src;
     if (fields.name && els.nameInput.value.trim()) {
       els.previewName.textContent = els.nameInput.value.trim();
