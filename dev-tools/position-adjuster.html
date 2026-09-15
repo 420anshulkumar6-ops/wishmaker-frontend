@@ -45,11 +45,16 @@
   .preview-box{
     width:100%; max-width:360px; margin:0 auto 16px;
     border:1px solid #333; border-radius:10px; overflow:hidden;
-    background:#000; aspect-ratio: 9/16; display:flex; align-items:center; justify-content:center;
+    background:#000; aspect-ratio: 9/16;
     position:relative;
   }
-  .preview-box img.bg-img{ width:100%; height:100%; object-fit:contain; display:block; }
-  .preview-box .placeholder{ color:var(--dim); font-size:0.85rem; text-align:center; padding:20px; }
+  .preview-box .placeholder{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    color:var(--dim); font-size:0.85rem; text-align:center; padding:20px;
+  }
+  .preview-box img.bg-img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block;
+  }
 
   /* instant CSS approximation, shown while dragging sliders — not the real render */
   .live-overlay{ position:absolute; inset:0; display:none; pointer-events:none; }
@@ -350,7 +355,11 @@
 namePosition: {
   topPercent: ${parseFloat(els.nameTopRange.value)}${fontSizeLine}${fontColorLine}
 }`;
-    updateLivePreview();
+    // Only touch the live preview box once something has actually been
+    // uploaded — otherwise the very first updateLabels() call on page load
+    // would build the (empty, black) overlay immediately and wipe out the
+    // "upload a background image" placeholder before the user does anything.
+    if (bgObjectUrl || photoObjectUrl) updateLivePreview();
   }
   [els.topRange, els.leftRange, els.widthRange, els.nameTopRange, els.nameLeftRange, els.nameFontSizeRange]
     .forEach(r => r.addEventListener('input', updateLabels));
@@ -391,14 +400,19 @@ namePosition: {
   });
 
   // ---- background image for the instant preview (just a visual reference, not sent anywhere) ----
-  els.bgInput.addEventListener('change', () => {
+  function handleBgFileChosen(){
     const file = els.bgInput.files[0];
     if (!file) return;
     ensureLiveOverlay();
     if (bgObjectUrl) URL.revokeObjectURL(bgObjectUrl);
     bgObjectUrl = URL.createObjectURL(file);
-    document.getElementById('liveBgImg').src = bgObjectUrl;
-  });
+    const bgImgEl = document.getElementById('liveBgImg');
+    bgImgEl.onerror = () => { els.status.textContent = 'Could not load that image — try a different file.'; };
+    bgImgEl.src = bgObjectUrl;
+    updateLivePreview();
+  }
+  els.bgInput.addEventListener('change', handleBgFileChosen);
+  els.bgInput.addEventListener('input', handleBgFileChosen); // some mobile browsers fire input, not change, for file pickers
 
   els.photoInput.addEventListener('change', () => {
     cachedPhotoUrl = null; // invalidate the uploaded-to-ImgBB cache on new file
@@ -408,6 +422,7 @@ namePosition: {
     if (photoObjectUrl) URL.revokeObjectURL(photoObjectUrl);
     photoObjectUrl = URL.createObjectURL(cachedFile);
     document.getElementById('livePhotoImg').src = photoObjectUrl;
+    updateLivePreview();
   });
 
   // NOTE: this dev tool needs its own photo URL to send to the backend
@@ -458,22 +473,4 @@ namePosition: {
           leftPercent: els.leftRange.value,
           widthPercent: els.widthRange.value,
           nameTopPercent: els.nameTopRange.value,
-          nameLeftPercent: els.nameLeftRange.value,
-          nameFontSize: manualSize > 0 ? manualSize : null,
-          nameFontColor: els.nameColorHex.value || null,
-          name: els.nameInput.value || null
-        })
-      });
-
-      if (!response.ok) throw new Error("Backend returned an error");
-      const blob = await response.blob();
-      const imgUrl = URL.createObjectURL(blob);
-
-      // Swap in the real render, hide the instant-preview overlay so there's
-      // no confusion about which one is the guaranteed-accurate result.
-      els.previewBox.innerHTML = '';
-      liveOverlayBuilt = false;
-      const tag = document.createElement('span');
-      tag.className = 'mode-tag';
-      tag.textContent = 'real backend render';
-      els.previewBox.append
+      
