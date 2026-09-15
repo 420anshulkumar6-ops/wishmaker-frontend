@@ -42,8 +42,17 @@
   }
   .go-btn:disabled{ opacity:0.5; cursor:not-allowed; }
 
+  .sticky-preview-wrap{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: #0a0a0a;
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid #2a2a2a;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
   .preview-box{
-    width:100%; max-width:360px; margin:0 auto 16px;
+    width:100%; max-width:220px; margin:0 auto;
     border:1px solid #333; border-radius:10px; overflow:hidden;
     background:#000; aspect-ratio: 9/16;
     position:relative;
@@ -103,6 +112,12 @@
 </style>
 </head>
 <body>
+
+<div class="sticky-preview-wrap">
+  <div class="preview-box" id="previewBox">
+    <p class="placeholder">Upload a background image above to see the instant preview, or upload a test photo and hit "Render exact frame" for the real result.</p>
+  </div>
+</div>
 
 <div class="panel">
   <h1>Position Tester — live backend</h1>
@@ -208,10 +223,6 @@
 
   <button class="go-btn" id="renderBtn">Render exact frame (real backend)</button>
   <p class="status" id="status"></p>
-
-  <div class="preview-box" id="previewBox">
-    <p class="placeholder">Upload a background image above to see the instant preview, or upload a test photo and hit "Render exact frame" for the real result.</p>
-  </div>
 
   <div class="output" id="output">photoPosition: { ... }</div>
   <button class="copy-btn" id="copyBtn">Copy config snippet</button>
@@ -464,74 +475,4 @@ namePosition: {
         cachedPhotoUrl = await uploadToImgBB(cachedFile);
       }
 
-      els.status.textContent = "Rendering exact frame on backend… (few seconds, longer if it was asleep)";
-
-      const manualSize = parseInt(els.nameFontSizeRange.value, 10);
-
-      const response = await fetch(els.backendUrl.value.replace(/\/$/, '') + '/preview-position', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          designId: els.designId.value,
-          photoUrl: cachedPhotoUrl,
-          topPercent: els.topRange.value,
-          leftPercent: els.leftRange.value,
-          widthPercent: els.widthRange.value,
-          nameTopPercent: els.nameTopRange.value,
-          nameLeftPercent: els.nameLeftRange.value,
-          nameFontSize: manualSize > 0 ? manualSize : null,
-          nameFontColor: els.nameColorHex.value || null,
-          name: els.nameInput.value || null
-        })
-      });
-
-      if (!response.ok) throw new Error("Backend returned an error");
-      const blob = await response.blob();
-      const imgUrl = URL.createObjectURL(blob);
-
-      // Swap in the real render, hide the instant-preview overlay so there's
-      // no confusion about which one is the guaranteed-accurate result.
-      els.previewBox.innerHTML = '';
-      liveOverlayBuilt = false;
-      const tag = document.createElement('span');
-      tag.className = 'mode-tag';
-      tag.textContent = 'real backend render';
-      els.previewBox.appendChild(tag);
-      const img = document.createElement('img');
-      img.className = 'bg-img';
-      img.src = imgUrl;
-      els.previewBox.appendChild(img);
-
-      els.status.textContent = "Done — this is the real render. Adjust sliders (preview goes back to instant mode) and re-render as needed.";
-    } catch (err) {
-      console.error(err);
-      els.status.textContent = "Something went wrong — check the backend URL and design ID, then try again.";
-    } finally {
-      els.renderBtn.disabled = false;
-    }
-  });
-
-  // Moving a slider after a real render switches the preview box back to
-  // instant-preview mode, so it's always clear which kind of preview is showing.
-  [els.topRange, els.leftRange, els.widthRange, els.nameTopRange, els.nameLeftRange, els.nameFontSizeRange].forEach(r => r.addEventListener('input', () => {
-    if (!liveOverlayBuilt) {
-      els.previewBox.innerHTML = '';
-      ensureLiveOverlay();
-      if (bgObjectUrl) document.getElementById('liveBgImg').src = bgObjectUrl;
-      if (photoObjectUrl) document.getElementById('livePhotoImg').src = photoObjectUrl;
-      updateLivePreview();
-    }
-  }));
-
-  els.copyBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText(els.output.textContent).then(() => {
-      const original = els.copyBtn.textContent;
-      els.copyBtn.textContent = 'Copied!';
-      setTimeout(() => els.copyBtn.textContent = original, 1200);
-    });
-  });
-})();
-</script>
-
-</body>
-</html>
+      els.status.textContent = "Rendering exact frame on backend…
