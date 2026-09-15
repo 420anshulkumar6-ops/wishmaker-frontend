@@ -402,12 +402,17 @@ namePosition: {
   // ---- background image for the instant preview (just a visual reference, not sent anywhere) ----
   function handleBgFileChosen(){
     const file = els.bgInput.files[0];
-    if (!file) return;
+    if (!file) {
+      els.status.textContent = 'No file detected from picker — try again.';
+      return;
+    }
+    els.status.textContent = `Loading "${file.name}" (${Math.round(file.size/1024)} KB)…`;
     ensureLiveOverlay();
     if (bgObjectUrl) URL.revokeObjectURL(bgObjectUrl);
     bgObjectUrl = URL.createObjectURL(file);
     const bgImgEl = document.getElementById('liveBgImg');
-    bgImgEl.onerror = () => { els.status.textContent = 'Could not load that image — try a different file.'; };
+    bgImgEl.onerror = () => { els.status.textContent = `Could not decode "${file.name}" — try a different file (JPEG/PNG work best).`; };
+    bgImgEl.onload = () => { els.status.textContent = `Background loaded (${bgImgEl.naturalWidth}×${bgImgEl.naturalHeight}).`; };
     bgImgEl.src = bgObjectUrl;
     updateLivePreview();
   }
@@ -473,4 +478,60 @@ namePosition: {
           leftPercent: els.leftRange.value,
           widthPercent: els.widthRange.value,
           nameTopPercent: els.nameTopRange.value,
-      
+          nameLeftPercent: els.nameLeftRange.value,
+          nameFontSize: manualSize > 0 ? manualSize : null,
+          nameFontColor: els.nameColorHex.value || null,
+          name: els.nameInput.value || null
+        })
+      });
+
+      if (!response.ok) throw new Error("Backend returned an error");
+      const blob = await response.blob();
+      const imgUrl = URL.createObjectURL(blob);
+
+      // Swap in the real render, hide the instant-preview overlay so there's
+      // no confusion about which one is the guaranteed-accurate result.
+      els.previewBox.innerHTML = '';
+      liveOverlayBuilt = false;
+      const tag = document.createElement('span');
+      tag.className = 'mode-tag';
+      tag.textContent = 'real backend render';
+      els.previewBox.appendChild(tag);
+      const img = document.createElement('img');
+      img.className = 'bg-img';
+      img.src = imgUrl;
+      els.previewBox.appendChild(img);
+
+      els.status.textContent = "Done — this is the real render. Adjust sliders (preview goes back to instant mode) and re-render as needed.";
+    } catch (err) {
+      console.error(err);
+      els.status.textContent = "Something went wrong — check the backend URL and design ID, then try again.";
+    } finally {
+      els.renderBtn.disabled = false;
+    }
+  });
+
+  // Moving a slider after a real render switches the preview box back to
+  // instant-preview mode, so it's always clear which kind of preview is showing.
+  [els.topRange, els.leftRange, els.widthRange, els.nameTopRange, els.nameLeftRange, els.nameFontSizeRange].forEach(r => r.addEventListener('input', () => {
+    if (!liveOverlayBuilt) {
+      els.previewBox.innerHTML = '';
+      ensureLiveOverlay();
+      if (bgObjectUrl) document.getElementById('liveBgImg').src = bgObjectUrl;
+      if (photoObjectUrl) document.getElementById('livePhotoImg').src = photoObjectUrl;
+      updateLivePreview();
+    }
+  }));
+
+  els.copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(els.output.textContent).then(() => {
+      const original = els.copyBtn.textContent;
+      els.copyBtn.textContent = 'Copied!';
+      setTimeout(() => els.copyBtn.textContent = original, 1200);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
