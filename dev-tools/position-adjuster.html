@@ -349,6 +349,10 @@
     const manualSize = parseInt(els.nameFontSizeRange.value, 10);
     els.nameFontSizeVal.textContent = manualSize > 0 ? (manualSize + 'px') : 'auto';
 
+    const nameLeftValue = parseFloat(els.nameLeftRange.value);
+    const nameLeftLine = nameLeftValue !== 50
+      ? `\n  leftPercent: ${nameLeftValue},`
+      : '';
     const fontColorLine = els.nameColorHex.value.trim() !== '0x6B1220'
       ? `\n  fontColor: "${els.nameColorHex.value.trim()}", // dev-tool test value — not a real config field, see server.js`
       : '';
@@ -364,7 +368,7 @@
   shape: "circle"
 },
 namePosition: {
-  topPercent: ${parseFloat(els.nameTopRange.value)}${fontSizeLine}${fontColorLine}
+  topPercent: ${parseFloat(els.nameTopRange.value)}${nameLeftLine}${fontSizeLine}${fontColorLine}
 }`;
     // Only touch the live preview box once something has actually been
     // uploaded — otherwise the very first updateLabels() call on page load
